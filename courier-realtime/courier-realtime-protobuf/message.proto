@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package com.lmlt.actor.example.courier.realtime.service;
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  single_file: true
+  preamble: "sealed trait CourierActorCmd"
+  preamble: "sealed trait CourierActorEvt"
+  preamble: "sealed trait CourierObserverEvt"
+  preamble: "sealed trait KinesisConsumerCmd"
+  preamble: "sealed trait KinesisConsumerEvt"
+  preamble: "sealed trait CourierMessage"
+};
+
+message Coordinates {
+    double longitude = 1;
+    double latitude = 2;
+}
+
+message LocationPing {
+    string trace_id = 1;
+    int64 timestamp = 2;
+    string courier_id = 3;
+    Coordinates coordinates = 4;
+}
+
+message KinesisMessage {
+    string kinesis_seq_nr = 1;
+    oneof kinesis_message_payload {
+        LocationPing location_ping = 11;
+    }
+}
+
+enum CourierStatus {
+    ONLINE = 0;
+    OFFLINE = 1;
+}
+
+message CourierActorOfflineCmd {
+    option (scalapb.message).extends = "CourierActorCmd";
+}
+
+message CourierActorStatusEvt {
+    option (scalapb.message).extends = "CourierActorEvt";
+    int64 timestamp = 1;
+    CourierStatus courier_status = 2;
+}
+
+message CourierActorLocationEvt {
+    option (scalapb.message).extends = "CourierActorEvt";
+    int64 timestamp = 1;
+    Coordinates coordinates = 2;
+}
+
+message CourierObserverStatusEvt {
+    option (scalapb.message).extends = "CourierObserverEvt";
+    int64 timestamp = 1;
+    string courier_id = 2;
+    CourierStatus courier_status = 3;
+}
+
+message CourierObserverLocationEvt {
+    option (scalapb.message).extends = "CourierObserverEvt";
+    int64 timestamp = 1;
+    string courier_id = 2;
+    Coordinates coordinates = 3;
+}
+
+message CourierActorState {
+    int64 lastMessageTimestamp = 1;
+    CourierStatus courier_status = 2;
+    Coordinates coordinates = 3;
+}
+
+message KinesisConsumerBootstrapCmd {
+    option (scalapb.message).extends = "KinesisConsumerCmd";
+    string aws_region = 1;
+    string kiensis_stream_name = 2;
+    string entity_id = 3;
+}
+
+message KinesisConsumerLoopCmd {
+    option (scalapb.message).extends = "KinesisConsumerCmd";
+}
+
+message KinesisConsumerBootstrapEvt {
+    option (scalapb.message).extends = "KinesisConsumerEvt";
+    string aws_region = 1;
+    string kinesis_stream_name = 2;
+}
+
+message KinesisConsumerUpdateSeqNrEvt {
+    option (scalapb.message).extends = "KinesisConsumerEvt";
+    string kinesis_seq_nr = 1;
+}
+
+message KinesisConsumerActorState {
+    string aws_region = 1;
+    string kinesis_stream_name = 2;
+    string kinesis_seq_nr = 3;
+}
+
+message CourierStatusMessage {
+    option (scalapb.message).extends = "CourierMessage";
+    string courier_id = 1;
+    CourierStatus courier_status = 2;
+}
+
+message CourierLocationMessage {
+    option (scalapb.message).extends = "CourierMessage";
+    string courier_id = 1;
+    Coordinates coordinates = 2;
+}

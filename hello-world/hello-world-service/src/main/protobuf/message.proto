@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.lmlt.actor.example;
+
+message First {
+    string shard = 1;
+    string name = 2;
+}
+
+message Loop {
+
+}
+
+message HelloEvt {
+    int64 num = 1;
+}
+
+message HelloState {
+    int64 count = 1;
+}

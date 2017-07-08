@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.courier-status-online {
+  width: 30px;
+  height: 20px;
+  margin: 4px;
+  background-color: lightgreen;
+}
+
+.courier-status-offline {
+  width: 30px;
+  height: 20px;
+  margin: 4px;
+  background-color: lightcoral;
+}
+
+#courier-wrap {
+  width: 50vw;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}

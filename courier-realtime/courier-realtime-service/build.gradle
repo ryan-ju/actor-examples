@@ -1,0 +1,76 @@
+group 'com.lmlt.actor.example'
+version '1.0.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+apply plugin: 'scala'
+apply plugin: 'application'
+
+def protoDestDir = "src/main/protoc-generated"
+def protoFile = "../courier-realtime-protobuf/message.proto"
+def protoThirdParty = "../courier-realtime-protobuf/"
+
+repositories {
+    jcenter()
+    maven {
+        url "https://dl.bintray.com/kamon-io/releases"
+    }
+    maven {
+        url "https://dl.bintray.com/kamon-io/snapshots"
+    }
+}
+
+configurations {
+    scalapbc
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    scalapbc 'com.trueaccord.scalapb:scalapbc_2.12:0.6.0-pre5'
+    compile 'com.trueaccord.scalapb:scalapb-runtime_2.12:0.6.0-pre5'
+    compile 'com.typesafe.akka:akka-http_2.12:10.0.7'
+    compile 'com.typesafe.akka:akka-cluster-tools_2.12:2.5.2'
+    compile 'com.typesafe.akka:akka-cluster-sharding_2.12:2.5.2'
+    compile 'com.typesafe.akka:akka-slf4j_2.12:2.5.2'
+    compile 'com.lightbend.akka:akka-management-cluster-http_2.12:0.3'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'com.typesafe.akka:akka-persistence-cassandra_2.12:0.54'
+    compile 'com.amazonaws:aws-java-sdk-kinesis:1.11.145'
+    compile 'io.kamon:kamon-akka-2.5_2.12:1.0.0-RC1-513e168ea538f94f5de22b191580ca4faaaa52e6'
+    compile 'io.kamon:kamon-datadog_2.12:1.0.0-RC1-2dcf4510efe9df12e640504bfa30ecabb3422638'
+    runtime 'org.aspectj:aspectjweaver:1.8.10'
+
+    testCompile 'junit:junit:4.12'
+}
+
+task scalapbc {
+    doLast {
+        delete protoDestDir
+
+        mkdir(protoDestDir)
+
+        javaexec {
+            main = 'com.trueaccord.scalapb.ScalaPBC'
+            classpath = configurations.scalapbc
+            args = [protoFile, "--scala_out=${protoDestDir}", "--proto_path=${protoThirdParty}"]
+        }
+    }
+}
+
+compileScala {
+    dependsOn scalapbc
+    source protoDestDir
+}
+
+clean {
+    delete protoDestDir
+}
+
+mainClassName = 'com.lmlt.actor.example.courier.realtime.service.Main'
