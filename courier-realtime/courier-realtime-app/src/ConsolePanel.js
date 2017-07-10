@@ -109,7 +109,7 @@ const ConsolePanel = ({courierUrl, onInjectorConnectClick, onInjectorUrlChanged,
         <div>
             <Grid style={{height: '10%'}}>
                 <Cell col={6}>
-                    <Card shadow={1} style={{width: 'auto'}}>
+                    <Card shadow={1} style={{width: 'auto', padding: 10}}>
                         <ConnectCourierPanel onCourierConnectClick={onCourierConnectClick}
                                              onCourierUrlChanged={onCourierUrlChanged}/>
                         <br/>

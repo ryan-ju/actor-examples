@@ -1,7 +1,41 @@
 import {adapt} from '@cycle/run/lib/adapt';
 import xs from "xstream";
 import PubSub from "pubsub-js"
-import {courierStatusEvt, courierLocationEvt, noEvt} from "./Action"
+import {
+    courierStatusEvt,
+    courierLocationEvt,
+    kinesisClusterStatsEvt,
+    courierClusterStatsEvt,
+    refreshClusterStatsEvt,
+    noEvt
+} from "./Action"
+
+// data of format "host1->(shard1:7,shard2:8)|host2->(shard1:8,shard2:7)"
+function createClusterStatsEvt(prefix, data) {
+    const hosts = data.split("|")
+    const table = hosts.map(hostStats => {
+        let [host, shardStats] = hostStats.split("->")
+        const result = {host: host}
+        let count = 0
+        // Trim ( and )
+        shardStats = shardStats.replace(/^\(|\)$/g, "")
+        shardStats.split(",").forEach(stats => {
+            const [ignored, entities] = stats.split(":")
+            count += parseInt(entities)
+        })
+        result[prefix] = count
+        return result
+    })
+
+    switch (prefix) {
+        case "kinesis_cluster_stats":
+            return kinesisClusterStatsEvt(table)
+        case "courier_cluster_stats":
+            return courierClusterStatsEvt(table)
+        default:
+            return noEvt()
+    }
+}
 
 function createEvt(input) {
     if (!input.includes(":")) {
@@ -26,6 +60,11 @@ function createEvt(input) {
             const x = parseFloat(cmd[1])
             const y = parseFloat(cmd[2])
             return courierLocationEvt({courierId, x, y})
+        case "kinesis_cluster_stats":
+        case "courier_cluster_stats":
+            const i = input.indexOf(":")
+            const data = input.slice(i + 1)
+            return createClusterStatsEvt(prefix, data)
         default:
             return noEvt()
     }
@@ -37,7 +76,9 @@ function WSDriver(typeOfConnection) {
     let listener = null
 
     function wsDriver(sink$) {
-        sink$.addListener({
+        const refreshClusterStats$ = xs.periodic(1000).mapTo(refreshClusterStatsEvt())
+
+        xs.merge(sink$, refreshClusterStats$).addListener({
             next: message => {
                 if (typeOfConnection == message.type) {
                     PubSub.publish("events", `${typeOfConnection} connecting ...`)
@@ -64,6 +105,9 @@ function WSDriver(typeOfConnection) {
                         websocket.send("report_kinesis_cluster")
                         websocket.send("report_courier_cluster")
                     }
+                } else if ("refresh_cluster_stats" == message.type && websocket != null) {
+                    websocket.send("report_kinesis_cluster")
+                    websocket.send("report_courier_cluster")
                 }
             },
             error: (err) => {

@@ -5,7 +5,9 @@ import 'react-mdl/extra/material.css';
 import 'react-mdl/extra/material.js';
 import ConsolePanel from "./ConsolePanel"
 import CourierStatusPanel from "./CourierStatusPanel"
+import ClusterStatusPanel from "./ClusterStatusPanel"
 import GridPanel from "./GridPanel"
+import CourierControllerPanel from "./CourierControllerPanel"
 import PubSub from "pubsub-js"
 import {connect, Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
@@ -62,6 +64,12 @@ class App extends Component {
                     <Grid>
                         <Cell col={6}><GridPanel/></Cell>
                         <Cell col={6}><CourierStatusPanel/></Cell>
+                    </Grid>
+                    <Grid>
+                        <Cell col={6}><CourierControllerPanel/></Cell>
+                    </Grid>
+                    <Grid>
+                        <Cell col={12}><ClusterStatusPanel/></Cell>
                     </Grid>
                     <div>
                         <ConsolePanel/>
