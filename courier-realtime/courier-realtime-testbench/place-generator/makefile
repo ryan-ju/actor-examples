@@ -1,0 +1,2 @@
+format:
+	yapf -r -i ./
