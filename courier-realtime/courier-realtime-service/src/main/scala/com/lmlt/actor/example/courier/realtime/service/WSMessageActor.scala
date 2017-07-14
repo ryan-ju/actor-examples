@@ -1,5 +1,6 @@
 package com.lmlt.actor.example.courier.realtime.service
 
+import akka.pattern.pipe
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{Publish, Subscribe}
@@ -26,17 +27,19 @@ object WSMessageActor {
   val reportHostCmd = "report_host"
   val reportKinesisClusterStatsCmd = "report_kinesis_cluster"
   val reportCourierClusterStatsCmd = "report_courier_cluster"
+  val reportGridClusterStatsCmd = "report_grid_cluster"
 
   val hostMessage = "host"
   val courierStatusMessage = "courier_status"
   val courierLocationMessage = "courier_location"
   val kinesisClusterStatsMessage = "kinesis_cluster_stats"
   val courierClusterStatsMessage = "courier_cluster_stats"
+  val gridClusterStatsMessage = "grid_cluster_stats"
 
   val errorMessage = "error"
 
-  def props(listener: ActorRef): Props =
-    Props(new WSMessageActor(listener))
+  def props(listener: ActorRef, gridMaster: GridMaster): Props =
+    Props(new WSMessageActor(listener, gridMaster))
 
   def transformClusterShardRegionStats(prefix: String, stats: ClusterShardingStats): TextMessage = {
     val str = stats.regions.map {
@@ -51,7 +54,7 @@ object WSMessageActor {
   }
 }
 
-class WSMessageActor(listener: ActorRef) extends Actor with ActorLogging {
+class WSMessageActor(listener: ActorRef, gridMaster: GridMaster) extends Actor with ActorLogging {
 
   import WSMessageActor._
   import context._
@@ -80,10 +83,14 @@ class WSMessageActor(listener: ActorRef) extends Actor with ActorLogging {
       case `reportHostCmd` => listener ! TextMessage(s"$hostMessage:$host")
       case `reportKinesisClusterStatsCmd` => kinesisClusterStats ! ShardRegion.GetClusterShardingStats(5 second)
       case `reportCourierClusterStatsCmd` => courierClusterStats ! ShardRegion.GetClusterShardingStats(5 second)
+      case `reportGridClusterStatsCmd` =>
+        val future = gridMaster.getClusterStats()
+            .map(transformClusterShardRegionStats(gridClusterStatsMessage, _))
+        pipe(future).to(listener)
     }
-    case CourierStatusMessage(courierId, courierStatus) =>
+    case CourierStatusMessage(courierId, courierStatus, _) =>
       listener ! TextMessage(s"$courierStatusMessage:$courierId|$courierStatus")
-    case CourierLocationMessage(courierId, Some(coordinates)) =>
+    case CourierLocationMessage(courierId, Some(coordinates), _) =>
       listener ! TextMessage(s"$courierLocationMessage:$courierId|${coordinates.longitude}|${coordinates.latitude}")
     case ClusterShardingStatsMessage(prefix, stats) =>
       listener ! transformClusterShardRegionStats(prefix, stats)

@@ -56,19 +56,9 @@ object Main {
 
     val courierManager = system.actorOf(CourierManagerActor.props(injector), "courier-manager")
 
-//    val (source, wsObserver) = Util.source(Source.actorRef(10, OverflowStrategy.dropHead))
-
-//    val wsCommandActor = system.actorOf(WSCommandActor.props(courierManager, wsObserver), "ws-command")
-
     courierManager ! CourierManagerStartMessage(courierNr)
 
-    // Websocket handler
-//    val wsHandler = Flow.fromSinkAndSource(Sink.actorRef(wsCommandActor, null), source)
-
-    val wsRoute: Route = concat(
-//      path("injector") {
-//        handleWebSocketMessages(wsHandler)
-//      },
+    val route: Route = concat(
       path("injector" / "gridSize") {
         get {
           complete(201, List(`Access-Control-Allow-Origin`.*), conf.getString("application.grid.width"))
@@ -97,7 +87,7 @@ object Main {
       }
     )
 
-    val bindingFuture = Http().bindAndHandle(wsRoute, "localhost", system.settings.config.getInt("application.websocket.port"))
+    val bindingFuture = Http().bindAndHandle(route, "localhost", system.settings.config.getInt("application.websocket.port"))
 
     bindingFuture.onFailure {
       case ex: Exception =>

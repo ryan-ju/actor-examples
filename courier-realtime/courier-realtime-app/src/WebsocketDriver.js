@@ -6,6 +6,7 @@ import {
     courierLocationEvt,
     kinesisClusterStatsEvt,
     courierClusterStatsEvt,
+    gridClusterStatsEvt,
     refreshClusterStatsEvt,
     noEvt
 } from "./Action"
@@ -32,6 +33,8 @@ function createClusterStatsEvt(prefix, data) {
             return kinesisClusterStatsEvt(table)
         case "courier_cluster_stats":
             return courierClusterStatsEvt(table)
+        case "grid_cluster_stats":
+            return gridClusterStatsEvt(table)
         default:
             return noEvt()
     }
@@ -62,6 +65,7 @@ function createEvt(input) {
             return courierLocationEvt({courierId, x, y})
         case "kinesis_cluster_stats":
         case "courier_cluster_stats":
+        case "grid_cluster_stats":
             const i = input.indexOf(":")
             const data = input.slice(i + 1)
             return createClusterStatsEvt(prefix, data)
@@ -104,10 +108,12 @@ function WSDriver(typeOfConnection) {
                         websocket.send("report_host")
                         websocket.send("report_kinesis_cluster")
                         websocket.send("report_courier_cluster")
+                        websocket.send("report_grid_cluster")
                     }
                 } else if ("refresh_cluster_stats" == message.type && websocket != null) {
                     websocket.send("report_kinesis_cluster")
                     websocket.send("report_courier_cluster")
+                    websocket.send("report_grid_cluster")
                 }
             },
             error: (err) => {

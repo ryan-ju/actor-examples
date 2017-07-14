@@ -12,11 +12,17 @@ option (scalapb.options) = {
   preamble: "sealed trait KinesisConsumerCmd"
   preamble: "sealed trait KinesisConsumerEvt"
   preamble: "sealed trait CourierMessage"
+  preamble: "sealed trait GridActorEvt"
 };
 
 message Coordinates {
     double longitude = 1;
     double latitude = 2;
+}
+
+message GridCoordinates {
+    int64 x = 1;
+    int64 y = 2;
 }
 
 message LocationPing {
@@ -106,10 +112,80 @@ message CourierStatusMessage {
     option (scalapb.message).extends = "CourierMessage";
     string courier_id = 1;
     CourierStatus courier_status = 2;
+    Coordinates prev_coordinates = 3;
 }
 
 message CourierLocationMessage {
     option (scalapb.message).extends = "CourierMessage";
     string courier_id = 1;
     Coordinates coordinates = 2;
+    Coordinates prev_coordinates = 3;
+}
+
+// Place
+
+message Place {
+    string place_id = 1;
+    Coordinates coordinates = 2;
+}
+
+// Grid
+
+message CourierRecommendationCmd {
+    int32 limit = 1;
+    Coordinates origin = 2;
+}
+
+message CourierRecommendationMessage {
+    repeated CourierDistanceMessage couriers = 1;
+    repeated GridCoordinates grids = 2; // The grid square that were searched
+}
+
+message CourierDistanceMessage {
+    string courier_id = 1;
+    double distance = 2;
+}
+
+// x and y represent the square in the grid in which to look for couriers
+message CourierListCmd {
+    int32 limit = 1;
+    Coordinates origin = 2;
+    GridCoordinates grid = 3;
+}
+
+message CourierListMessage {
+    repeated CourierDistanceMessage couriers = 1;
+    GridCoordinates grid = 2;
+}
+
+message GridCourierStatusCmd {
+    CourierStatusMessage msg = 1;
+    GridCoordinates grid = 2;
+}
+
+// Semantically, evt.coordinates must be inside the square defined by grid
+message GridCourierEnterCmd {
+    CourierLocationMessage msg = 1;
+    GridCoordinates grid = 2;
+}
+
+// Semantically, evt.prev_coordinates must be inside the square defined by grid
+message GridCourierLeaveCmd {
+    CourierLocationMessage msg = 1;
+    GridCoordinates grid = 2;
+}
+
+message GridActorCourierEnterEvt {
+    option (scalapb.message).extends = "GridActorEvt";
+    string courier_id = 1;
+    Coordinates coordinates = 2;
+}
+
+message GridActorCourierLeaveEvt {
+    option (scalapb.message).extends = "GridActorEvt";
+    string courier_id = 1;
+}
+
+message GridActorState {
+    map<string, Coordinates> coordinates = 1;
 }

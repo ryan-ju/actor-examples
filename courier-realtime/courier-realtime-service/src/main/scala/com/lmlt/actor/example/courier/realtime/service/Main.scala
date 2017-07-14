@@ -1,12 +1,20 @@
 package com.lmlt.actor.example.courier.realtime.service
 
+import akka.pattern.ask
 import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Directives.{handleWebSocketMessages, path}
+import akka.http.scaladsl.model.headers.`Access-Control-Allow-Origin`
+import akka.http.scaladsl.server.Directives.{complete, concat, get, handleWebSocketMessages, onComplete, onSuccess, parameters, path}
+import akka.http.scaladsl.server.PathMatcher._
 import akka.http.scaladsl.server.Route
 import akka.stream.{ActorMaterializer, OverflowStrategy}
 import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.util.Timeout
+import com.lmlt.actor.example.courier.realtime.service.message.Coordinates
 import kamon.Kamon
+
+import scala.concurrent.duration._
+import scala.util.{Failure, Success}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -18,11 +26,15 @@ object Main {
     implicit val executionContext = system.dispatcher
     val conf = system.settings.config
 
+    val gridMaster = new GridMaster()
+
     val (source, wsObserver) = Util.source(Source.actorRef(10, OverflowStrategy.dropHead))
 
-    val wsMessage: ActorRef = system.actorOf(WSMessageActor.props(listener = wsObserver), name = "ws-message")
+    val wsMessage: ActorRef = system.actorOf(WSMessageActor.props(listener = wsObserver, gridMaster), name = "ws-message")
 
-    val courierCluster = CourierActor.cluster(observer = wsMessage)
+    val courierCluster = CourierActor.cluster(gridMaster)
+
+    val placeActor = system.actorOf(PlaceActor.props().withDispatcher("http-dispatcher"), name = "place")
 
     val kinesisMessageRouter = system.actorOf(KinesisMessageRouter.props(locationPingActor = courierCluster), "kinesis-message-router")
 
@@ -39,11 +51,37 @@ object Main {
 
     val wsHandler = Flow.fromSinkAndSource(Sink.actorRef(wsMessage, null), source)
 
-    val wsRoute: Route = path("events") {
-      handleWebSocketMessages(wsHandler)
-    }
+    import JSONSupport._
+    val route: Route = concat(
+      path("service") {
+        handleWebSocketMessages(wsHandler)
+      },
+      path("service" / "places") {
+        get {
+          implicit val timeout = Timeout(5 second)
+          val future = (placeActor ? GetPlacesCmd).mapTo[PlacesMessage]
+          onSuccess(future)(complete(201, List(`Access-Control-Allow-Origin`.*), _))
+        }
+      },
+      path("service" / "recommendations") {
+        get {
+          parameters('longitude, 'latitude, 'radius, 'limit) { (longitude, latitude, radius, limit) =>
+            val coordinates = Coordinates(longitude = longitude.toDouble, latitude = latitude.toDouble)
+            val future = gridMaster.getCourierRecommendation(coordinates, radius.toLong, limit.toInt)
+            onComplete(future) {
+              case Success(recommendations) => complete(201, List(`Access-Control-Allow-Origin`.*), recommendations)
 
-    val bindingFuture = Http().bindAndHandle(wsRoute, "localhost", system.settings.config.getInt("application.websocket.port"))
+              case Failure(e) => {
+                e.printStackTrace()
+                complete(500, List(`Access-Control-Allow-Origin`.*), e.getMessage)
+              }
+            }
+          }
+        }
+      }
+    )
+
+    val bindingFuture = Http().bindAndHandle(route, "localhost", system.settings.config.getInt("application.websocket.port"))
 
     bindingFuture.onFailure {
       case ex: Exception =>

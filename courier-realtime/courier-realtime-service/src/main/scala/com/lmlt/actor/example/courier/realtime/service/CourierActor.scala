@@ -20,12 +20,12 @@ object CourierActor {
   val snapshotAfterMessageNr = conf.getInt("application.courier-cluster.snapshotAfterMessageNr")
   val offlineAfterS = conf.getLong("application.courier.offlineAfterS")
 
-  def props(observer: ActorRef): Props = Props(new CourierActor(observer))
+  def props(gridMaster: GridMaster): Props = Props(new CourierActor(gridMaster))
 
-  def cluster(observer: ActorRef)(implicit system: ActorSystem): ActorRef =
+  def cluster(gridMaster: GridMaster)(implicit system: ActorSystem): ActorRef =
     ClusterSharding(system).start(
       typeName = shardRegion,
-      entityProps = props(observer),
+      entityProps = props(gridMaster),
       settings = ClusterShardingSettings(system),
       extractEntityId = {
         case msg@KinesisMessage(_, KinesisMessagePayload.LocationPing(LocationPing(_, _, id, _))) => (id, msg)
@@ -38,7 +38,7 @@ object CourierActor {
     )
 }
 
-class CourierActor(observer: ActorRef) extends PersistentActor with ActorLogging {
+class CourierActor(gridMaster: GridMaster) extends PersistentActor with ActorLogging {
 
   import CourierActor._
   import context._
@@ -83,18 +83,25 @@ class CourierActor(observer: ActorRef) extends PersistentActor with ActorLogging
           if (state.courierStatus == CourierStatus.OFFLINE) {
             persistAsync(CourierActorStatusEvt(timestamp, courierStatus = CourierStatus.ONLINE)) { event =>
               updateState(event)
-              mediator ! Publish(WSMessageActor.courierMessageTopic, CourierStatusMessage(
+              val msg = CourierStatusMessage(
                 courierId = courierId,
-                courierStatus = event.courierStatus
-              ))
+                courierStatus = event.courierStatus,
+                prevCoordinates = state.coordinates
+              )
+              mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+              gridMaster.updateCourierStatus(msg)
             }
           }
           persistAsync(CourierActorLocationEvt(timestamp, coordinates)) { event =>
+            val prevCoordinates = state.coordinates
             updateState(event)
-            mediator ! Publish(WSMessageActor.courierMessageTopic, CourierLocationMessage(
+            val msg = CourierLocationMessage(
               courierId = courierId,
-              coordinates = event.coordinates
-            ))
+              coordinates = event.coordinates,
+              prevCoordinates = prevCoordinates
+            )
+            mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+            gridMaster.updateCourierLocation(msg)
           }
         } else {
           log.info(s"Ignore KinesisMessage with timestamp $timestamp")
@@ -108,10 +115,13 @@ class CourierActor(observer: ActorRef) extends PersistentActor with ActorLogging
       if (state.courierStatus == CourierStatus.ONLINE) {
         persistAsync(CourierActorStatusEvt(courierStatus = CourierStatus.OFFLINE)) { event =>
           updateState(event)
-          mediator ! Publish(WSMessageActor.courierMessageTopic, CourierStatusMessage(
+          val msg = CourierStatusMessage(
             courierId = courierId,
-            courierStatus = event.courierStatus
-          ))
+            courierStatus = event.courierStatus,
+            prevCoordinates = state.coordinates
+          )
+          mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+          gridMaster.updateCourierStatus(msg)
         }
       }
   }

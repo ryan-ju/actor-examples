@@ -1,7 +1,7 @@
 import xs from "xstream"
 import sampleCombine from "xstream/extra/sampleCombine"
 import PubSub from "pubsub-js"
-import {gridSizeEvt, courierNrEvt, noEvt} from "./Action"
+import {gridSizeEvt, courierNrEvt, placeEvt, courierRecommendationEvt, noEvt} from "./Action"
 
 function HTTPCycle(sources) {
     const state$ = sources.STATE
@@ -21,6 +21,12 @@ function HTTPCycle(sources) {
                 url: `http${state.get("injectorUrl").slice(2)}/courierNr`,
                 category: message.type
             }
+        } else if ("get_place" == message.type) {
+            PubSub.publish("events", "Getting places ...")
+            return {
+                url: `http${state.get("courierUrl").slice(2)}/places`,
+                category: "get_place"
+            }
         } else if ("start_courier" == message.type) {
             const courierId = message.payload
             PubSub.publish("events", `Starting courier ${courierId} ...`)
@@ -38,6 +44,20 @@ function HTTPCycle(sources) {
                 url: `http${state.get("injectorUrl").slice(2)}/stopCourier`,
                 query: {courierId: courierId},
                 category: "confirmation"
+            }
+        } else if ("get_courier_recommendation" == message.type) {
+            PubSub.publish("events", "Getting courier recommendations ...")
+            const {longitude, latitude, radius, limit} = message.payload
+            return {
+                url: `http${state.get("courierUrl").slice(2)}/recommendations`,
+                query: {longitude, latitude, radius, limit},
+                category: "courier_recommendation"
+            }
+        } else if ("refresh" == message.type) {
+            PubSub.publish("events", "Getting places ...")
+            return {
+                url: `http${state.get("courierUrl").slice(2)}/places`,
+                category: "get_place"
             }
         }
     })
@@ -58,6 +78,36 @@ function HTTPCycle(sources) {
             return courierNrEvt(parseInt(res.text))
         })
 
+    const place$ = http$
+        .select("get_place")
+        .flatten()
+        .map(res => {
+            PubSub.publish("events", `Received places`)
+            // Response of format
+            // {
+            //     "places": [
+            //     {
+            //         "placeId": "place-7",
+            //         "coordinates": {
+            //             "longitude": 9.45245953473,
+            //             "latitude": 1.47742691815
+            //         }
+            //     },
+            //     ...
+            //     ]
+            // }
+            const places = JSON.parse(res.text)["places"]
+            return placeEvt(places)
+        })
+
+    const courierRecommendation$ = http$
+        .select("courier_recommendation")
+        .flatten()
+        .map(res => {
+            PubSub.publish("events", "Received courier recommendations")
+            return courierRecommendationEvt(JSON.parse(res.text))
+        })
+
     const confirmation$ = http$
         .select("confirmation")
         .flatten()
@@ -68,7 +118,7 @@ function HTTPCycle(sources) {
 
     return {
         HTTP: request$,
-        ACTION: xs.merge(gridSize$, courierNr$, confirmation$)
+        ACTION: xs.merge(gridSize$, courierNr$, place$, courierRecommendation$, confirmation$)
     }
 }
 

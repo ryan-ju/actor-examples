@@ -37,7 +37,7 @@ class CourierControllerPanel extends React.Component {
     render() {
         return (
             <Card id="courier-control-panel" shadow={1} style={{height: "100%", width: "auto", padding: 10}}>
-                <div style={{display: "flex", "flex-direction": "row", "align-content": "flex-start"}}>
+                <div style={{display: "flex", flexDirection: "row", "alignContent": "flex-start"}}>
                     <SelectField label="Courier ID" value={this.state.data.courierId} onChange={this.selectCourier}>
                         {
                             [...Array(this.props.courierNr).keys()].map(id => {

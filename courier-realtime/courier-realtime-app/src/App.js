@@ -8,6 +8,7 @@ import CourierStatusPanel from "./CourierStatusPanel"
 import ClusterStatusPanel from "./ClusterStatusPanel"
 import GridPanel from "./GridPanel"
 import CourierControllerPanel from "./CourierControllerPanel"
+import CourierRecommendationPanel from "./CourierRecommendationPanel"
 import PubSub from "pubsub-js"
 import {connect, Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
@@ -31,7 +32,6 @@ function main(sources) {
     return {
         ACTION: xs.merge(httpAction$, sources.COURIER_WEBSOCKET),
         COURIER_WEBSOCKET: sources.ACTION,
-        // INJECTOR_WEBSOCKET: sources.ACTION,
         HTTP: httpHttp$
     }
 }
@@ -54,19 +54,17 @@ class App extends Component {
         return (
             <Provider store={store}>
                 <div className="App">
-                    <div className="App-header">
-                        <img src={logo} className="App-logo" alt="logo"/>
-                        <h2>Welcome to React</h2>
+                    <div className="App-header" style={{height: "auto"}}>
+                        <h2>Realtime Courier Recommendation Prototype</h2>
+                        <div>By Ryan Ju</div>
                     </div>
-                    <p className="App-intro">
-                        To get started, edit <code>src/App.js</code> and save to reload.
-                    </p>
                     <Grid>
                         <Cell col={6}><GridPanel/></Cell>
                         <Cell col={6}><CourierStatusPanel/></Cell>
                     </Grid>
                     <Grid>
                         <Cell col={6}><CourierControllerPanel/></Cell>
+                        <Cell col={6}><CourierRecommendationPanel/></Cell>
                     </Grid>
                     <Grid>
                         <Cell col={12}><ClusterStatusPanel/></Cell>
@@ -76,8 +74,8 @@ class App extends Component {
                     </div>
                 </div>
             </Provider>
-        );
+        )
     }
 }
 
-export default App;
+export default App

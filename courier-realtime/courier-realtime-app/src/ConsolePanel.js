@@ -6,6 +6,7 @@ import PubSub from "pubsub-js"
 import {
     getGridSizeEvt,
     getCourierNrEvt,
+    getPlaceEvt,
     courierUrlChangedEvt,
     injectorUrlChangedEvt,
     connectCourierEvt,
@@ -43,7 +44,10 @@ const merge = (stateProps, dispatchProps, ownProps) => {
         ...ownProps,
         ...stateProps,
         ...dispatchProps,
-        onCourierConnectClick: () => dispatch(connectCourierEvt(courierUrl)),
+        onCourierConnectClick: () => {
+            dispatch(connectCourierEvt(courierUrl))
+            dispatch(getPlaceEvt())
+        },
         onInjectorConnectClick: () => {
             dispatch(getGridSizeEvt())
             dispatch(getCourierNrEvt())
@@ -56,7 +60,7 @@ const ConnectCourierPanel = ({onCourierConnectClick, onCourierUrlChanged}) => {
     return (
         <div className="mui-panel">
             <Textfield label="host:port..." floatingLabel onChange={({target}) => onCourierUrlChanged(target.value)}
-                       value="ws://localhost:30001/events"/>
+                       value="ws://localhost:30001/service"/>
             <Button raised colored ripple onClick={onCourierConnectClick}>Connect</Button>
         </div>
     )

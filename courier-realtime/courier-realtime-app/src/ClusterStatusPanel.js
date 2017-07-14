@@ -7,11 +7,12 @@ import PubSub from "pubsub-js"
 const mapStateToProps = state => {
     return {
         kinesisClusterStats: state.get("kinesisClusterStats"),
-        courierClusterStats: state.get("courierClusterStats")
+        courierClusterStats: state.get("courierClusterStats"),
+        gridClusterStats: state.get("gridClusterStats")
     }
 }
 
-const ClusterStatusPanel = ({kinesisClusterStats, courierClusterStats}) => {
+const ClusterStatusPanel = ({kinesisClusterStats, courierClusterStats, gridClusterStats}) => {
     const map = new Map()
     // record of format {host: "", kinesisClusterName: entityNr, courierClusterName: entityNr}
     kinesisClusterStats.forEach(record => {
@@ -19,6 +20,15 @@ const ClusterStatusPanel = ({kinesisClusterStats, courierClusterStats}) => {
     })
 
     courierClusterStats.forEach(record => {
+        const rec = map.get(record.host)
+        if (rec == null) {
+            map.set(record.host, Object.assign({}, record))
+        } else {
+            map.set(record.host, Object.assign(rec, record))
+        }
+    })
+
+    gridClusterStats.forEach(record => {
         const rec = map.get(record.host)
         if (rec == null) {
             map.set(record.host, Object.assign({}, record))
