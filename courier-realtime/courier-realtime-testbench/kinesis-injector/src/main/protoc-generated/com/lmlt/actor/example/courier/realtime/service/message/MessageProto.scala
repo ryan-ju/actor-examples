@@ -13,6 +13,7 @@ sealed trait CourierObserverEvt
 sealed trait KinesisConsumerCmd
 sealed trait KinesisConsumerEvt
 sealed trait CourierMessage
+sealed trait GridActorEvt
 
 sealed trait CourierStatus extends _root_.com.trueaccord.scalapb.GeneratedEnum {
   type EnumType = CourierStatus
@@ -165,6 +166,119 @@ object Coordinates extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.
 }
 
 @SerialVersionUID(0L)
+final case class GridCoordinates(
+    x: Long = 0L,
+    y: Long = 0L
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridCoordinates] with com.trueaccord.lenses.Updatable[GridCoordinates] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (x != 0L) { __size += _root_.com.google.protobuf.CodedOutputStream.computeInt64Size(1, x) }
+      if (y != 0L) { __size += _root_.com.google.protobuf.CodedOutputStream.computeInt64Size(2, y) }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = x
+        if (__v != 0L) {
+          _output__.writeInt64(1, __v)
+        }
+      };
+      {
+        val __v = y
+        if (__v != 0L) {
+          _output__.writeInt64(2, __v)
+        }
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = {
+      var __x = this.x
+      var __y = this.y
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 8 =>
+            __x = _input__.readInt64()
+          case 16 =>
+            __y = _input__.readInt64()
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates(
+          x = __x,
+          y = __y
+      )
+    }
+    def withX(__v: Long): GridCoordinates = copy(x = __v)
+    def withY(__v: Long): GridCoordinates = copy(y = __v)
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = x
+          if (__t != 0L) __t else null
+        }
+        case 2 => {
+          val __t = y
+          if (__t != 0L) __t else null
+        }
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PLong(x)
+        case 2 => _root_.scalapb.descriptors.PLong(y)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+}
+
+object GridCoordinates extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates(
+      __fieldsMap.getOrElse(__fields.get(0), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(1), 0L).asInstanceOf[Long]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[Long]).getOrElse(0L),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[Long]).getOrElse(0L)
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(1)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(1)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates(
+  )
+  implicit class GridCoordinatesLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates](_l) {
+    def x: _root_.com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.x)((c_, f_) => c_.copy(x = f_))
+    def y: _root_.com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.y)((c_, f_) => c_.copy(y = f_))
+  }
+  final val X_FIELD_NUMBER = 1
+  final val Y_FIELD_NUMBER = 2
+}
+
+@SerialVersionUID(0L)
 final case class LocationPing(
     traceId: String = "",
     timestamp: Long = 0L,
@@ -301,8 +415,8 @@ object LocationPing extends com.trueaccord.scalapb.GeneratedMessageCompanion[com
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(1)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(1)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(2)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(2)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -424,8 +538,8 @@ object KinesisMessage extends com.trueaccord.scalapb.GeneratedMessageCompanion[c
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(2)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(2)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(3)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(3)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -506,8 +620,8 @@ object CourierActorOfflineCmd extends com.trueaccord.scalapb.GeneratedMessageCom
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(3)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(3)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(4)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(4)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
   lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierActorOfflineCmd(
@@ -615,8 +729,8 @@ object CourierActorStatusEvt extends com.trueaccord.scalapb.GeneratedMessageComp
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(4)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(4)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(5)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(5)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = {
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -730,8 +844,8 @@ object CourierActorLocationEvt extends com.trueaccord.scalapb.GeneratedMessageCo
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(5)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(5)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(6)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(6)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -870,8 +984,8 @@ object CourierObserverStatusEvt extends com.trueaccord.scalapb.GeneratedMessageC
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(6)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(6)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(7)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(7)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = {
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -1007,8 +1121,8 @@ object CourierObserverLocationEvt extends com.trueaccord.scalapb.GeneratedMessag
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(7)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(7)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(8)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(8)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -1147,8 +1261,8 @@ object CourierActorState extends com.trueaccord.scalapb.GeneratedMessageCompanio
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(8)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(8)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(9)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(9)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -1293,8 +1407,8 @@ object KinesisConsumerBootstrapCmd extends com.trueaccord.scalapb.GeneratedMessa
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(9)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(9)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(10)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(10)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
   lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.KinesisConsumerBootstrapCmd(
@@ -1348,8 +1462,8 @@ object KinesisConsumerLoopCmd extends com.trueaccord.scalapb.GeneratedMessageCom
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(10)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(10)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(11)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(11)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
   lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.KinesisConsumerLoopCmd(
@@ -1457,8 +1571,8 @@ object KinesisConsumerBootstrapEvt extends com.trueaccord.scalapb.GeneratedMessa
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(11)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(11)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(12)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(12)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
   lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.KinesisConsumerBootstrapEvt(
@@ -1550,8 +1664,8 @@ object KinesisConsumerUpdateSeqNrEvt extends com.trueaccord.scalapb.GeneratedMes
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(12)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(12)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(13)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(13)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
   lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.KinesisConsumerUpdateSeqNrEvt(
@@ -1681,8 +1795,8 @@ object KinesisConsumerActorState extends com.trueaccord.scalapb.GeneratedMessage
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(13)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(13)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(14)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(14)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
   lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.KinesisConsumerActorState(
@@ -1700,7 +1814,8 @@ object KinesisConsumerActorState extends com.trueaccord.scalapb.GeneratedMessage
 @SerialVersionUID(0L)
 final case class CourierStatusMessage(
     courierId: String = "",
-    courierStatus: com.lmlt.actor.example.courier.realtime.service.message.CourierStatus = com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE
+    courierStatus: com.lmlt.actor.example.courier.realtime.service.message.CourierStatus = com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE,
+    prevCoordinates: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierStatusMessage] with com.trueaccord.lenses.Updatable[CourierStatusMessage] with CourierMessage {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
@@ -1708,6 +1823,7 @@ final case class CourierStatusMessage(
       var __size = 0
       if (courierId != "") { __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, courierId) }
       if (courierStatus != com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE) { __size += _root_.com.google.protobuf.CodedOutputStream.computeEnumSize(2, courierStatus.value) }
+      if (prevCoordinates.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(prevCoordinates.get.serializedSize) + prevCoordinates.get.serializedSize }
       __size
     }
     final override def serializedSize: Int = {
@@ -1731,10 +1847,16 @@ final case class CourierStatusMessage(
           _output__.writeEnum(2, __v.value)
         }
       };
+      prevCoordinates.foreach { __v =>
+        _output__.writeTag(3, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
     }
     def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage = {
       var __courierId = this.courierId
       var __courierStatus = this.courierStatus
+      var __prevCoordinates = this.prevCoordinates
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -1744,16 +1866,22 @@ final case class CourierStatusMessage(
             __courierId = _input__.readString()
           case 16 =>
             __courierStatus = com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.fromValue(_input__.readEnum())
+          case 26 =>
+            __prevCoordinates = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __prevCoordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
           case tag => _input__.skipField(tag)
         }
       }
       com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage(
           courierId = __courierId,
-          courierStatus = __courierStatus
+          courierStatus = __courierStatus,
+          prevCoordinates = __prevCoordinates
       )
     }
     def withCourierId(__v: String): CourierStatusMessage = copy(courierId = __v)
     def withCourierStatus(__v: com.lmlt.actor.example.courier.realtime.service.message.CourierStatus): CourierStatusMessage = copy(courierStatus = __v)
+    def getPrevCoordinates: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = prevCoordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+    def clearPrevCoordinates: CourierStatusMessage = copy(prevCoordinates = None)
+    def withPrevCoordinates(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CourierStatusMessage = copy(prevCoordinates = Some(__v))
     def getFieldByNumber(__fieldNumber: Int): scala.Any = {
       (__fieldNumber: @_root_.scala.unchecked) match {
         case 1 => {
@@ -1764,6 +1892,7 @@ final case class CourierStatusMessage(
           val __t = courierStatus.javaValueDescriptor
           if (__t.getNumber() != 0) __t else null
         }
+        case 3 => prevCoordinates.orNull
       }
     }
     def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
@@ -1771,6 +1900,7 @@ final case class CourierStatusMessage(
       (__field.number: @_root_.scala.unchecked) match {
         case 1 => _root_.scalapb.descriptors.PString(courierId)
         case 2 => _root_.scalapb.descriptors.PEnum(courierStatus.scalaValueDescriptor)
+        case 3 => prevCoordinates.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
       }
     }
     override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -1784,7 +1914,8 @@ object CourierStatusMessage extends com.trueaccord.scalapb.GeneratedMessageCompa
     val __fields = javaDescriptor.getFields
     com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
-      com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.fromValue(__fieldsMap.getOrElse(__fields.get(1), com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE.javaValueDescriptor).asInstanceOf[_root_.com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber)
+      com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.fromValue(__fieldsMap.getOrElse(__fields.get(1), com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE.javaValueDescriptor).asInstanceOf[_root_.com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]
     )
   }
   implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage] = _root_.scalapb.descriptors.Reads{
@@ -1792,13 +1923,20 @@ object CourierStatusMessage extends com.trueaccord.scalapb.GeneratedMessageCompa
       require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
       com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage(
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse(""),
-        com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.fromValue(__fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[_root_.scalapb.descriptors.EnumValueDescriptor]).getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE.scalaValueDescriptor).number)
+        com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.fromValue(__fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[_root_.scalapb.descriptors.EnumValueDescriptor]).getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierStatus.ONLINE.scalaValueDescriptor).number),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(3).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]])
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(14)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(14)
-  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(15)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(15)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 3 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+    }
+    __out
+  }
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = {
     (__fieldNumber: @_root_.scala.unchecked) match {
       case 2 => com.lmlt.actor.example.courier.realtime.service.message.CourierStatus
@@ -1809,16 +1947,1247 @@ object CourierStatusMessage extends com.trueaccord.scalapb.GeneratedMessageCompa
   implicit class CourierStatusMessageLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage](_l) {
     def courierId: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.courierId)((c_, f_) => c_.copy(courierId = f_))
     def courierStatus: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierStatus] = field(_.courierStatus)((c_, f_) => c_.copy(courierStatus = f_))
+    def prevCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getPrevCoordinates)((c_, f_) => c_.copy(prevCoordinates = Some(f_)))
+    def optionalPrevCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.prevCoordinates)((c_, f_) => c_.copy(prevCoordinates = f_))
   }
   final val COURIER_ID_FIELD_NUMBER = 1
   final val COURIER_STATUS_FIELD_NUMBER = 2
+  final val PREV_COORDINATES_FIELD_NUMBER = 3
 }
 
 @SerialVersionUID(0L)
 final case class CourierLocationMessage(
     courierId: String = "",
-    coordinates: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
+    coordinates: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None,
+    prevCoordinates: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierLocationMessage] with com.trueaccord.lenses.Updatable[CourierLocationMessage] with CourierMessage {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (courierId != "") { __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, courierId) }
+      if (coordinates.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(coordinates.get.serializedSize) + coordinates.get.serializedSize }
+      if (prevCoordinates.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(prevCoordinates.get.serializedSize) + prevCoordinates.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = courierId
+        if (__v != "") {
+          _output__.writeString(1, __v)
+        }
+      };
+      coordinates.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      prevCoordinates.foreach { __v =>
+        _output__.writeTag(3, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage = {
+      var __courierId = this.courierId
+      var __coordinates = this.coordinates
+      var __prevCoordinates = this.prevCoordinates
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __courierId = _input__.readString()
+          case 18 =>
+            __coordinates = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __coordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
+          case 26 =>
+            __prevCoordinates = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __prevCoordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+          courierId = __courierId,
+          coordinates = __coordinates,
+          prevCoordinates = __prevCoordinates
+      )
+    }
+    def withCourierId(__v: String): CourierLocationMessage = copy(courierId = __v)
+    def getCoordinates: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = coordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+    def clearCoordinates: CourierLocationMessage = copy(coordinates = None)
+    def withCoordinates(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CourierLocationMessage = copy(coordinates = Some(__v))
+    def getPrevCoordinates: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = prevCoordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+    def clearPrevCoordinates: CourierLocationMessage = copy(prevCoordinates = None)
+    def withPrevCoordinates(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CourierLocationMessage = copy(prevCoordinates = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = courierId
+          if (__t != "") __t else null
+        }
+        case 2 => coordinates.orNull
+        case 3 => prevCoordinates.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PString(courierId)
+        case 2 => coordinates.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+        case 3 => prevCoordinates.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage
+}
+
+object CourierLocationMessage extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+      __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]],
+      __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse(""),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(3).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(16)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(16)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+      case 3 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+  )
+  implicit class CourierLocationMessageLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage](_l) {
+    def courierId: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.courierId)((c_, f_) => c_.copy(courierId = f_))
+    def coordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getCoordinates)((c_, f_) => c_.copy(coordinates = Some(f_)))
+    def optionalCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.coordinates)((c_, f_) => c_.copy(coordinates = f_))
+    def prevCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getPrevCoordinates)((c_, f_) => c_.copy(prevCoordinates = Some(f_)))
+    def optionalPrevCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.prevCoordinates)((c_, f_) => c_.copy(prevCoordinates = f_))
+  }
+  final val COURIER_ID_FIELD_NUMBER = 1
+  final val COORDINATES_FIELD_NUMBER = 2
+  final val PREV_COORDINATES_FIELD_NUMBER = 3
+}
+
+@SerialVersionUID(0L)
+final case class Place(
+    placeId: String = "",
+    coordinates: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Place] with com.trueaccord.lenses.Updatable[Place] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (placeId != "") { __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, placeId) }
+      if (coordinates.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(coordinates.get.serializedSize) + coordinates.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = placeId
+        if (__v != "") {
+          _output__.writeString(1, __v)
+        }
+      };
+      coordinates.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.Place = {
+      var __placeId = this.placeId
+      var __coordinates = this.coordinates
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __placeId = _input__.readString()
+          case 18 =>
+            __coordinates = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __coordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.Place(
+          placeId = __placeId,
+          coordinates = __coordinates
+      )
+    }
+    def withPlaceId(__v: String): Place = copy(placeId = __v)
+    def getCoordinates: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = coordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+    def clearCoordinates: Place = copy(coordinates = None)
+    def withCoordinates(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): Place = copy(coordinates = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = placeId
+          if (__t != "") __t else null
+        }
+        case 2 => coordinates.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PString(placeId)
+        case 2 => coordinates.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.Place
+}
+
+object Place extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.Place] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.Place] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.Place = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.Place(
+      __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.Place] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.Place(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse(""),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(17)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(17)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.Place(
+  )
+  implicit class PlaceLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Place]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Place](_l) {
+    def placeId: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.placeId)((c_, f_) => c_.copy(placeId = f_))
+    def coordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getCoordinates)((c_, f_) => c_.copy(coordinates = Some(f_)))
+    def optionalCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.coordinates)((c_, f_) => c_.copy(coordinates = f_))
+  }
+  final val PLACE_ID_FIELD_NUMBER = 1
+  final val COORDINATES_FIELD_NUMBER = 2
+}
+
+@SerialVersionUID(0L)
+final case class CourierRecommendationCmd(
+    limit: Int = 0,
+    origin: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierRecommendationCmd] with com.trueaccord.lenses.Updatable[CourierRecommendationCmd] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (limit != 0) { __size += _root_.com.google.protobuf.CodedOutputStream.computeInt32Size(1, limit) }
+      if (origin.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(origin.get.serializedSize) + origin.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = limit
+        if (__v != 0) {
+          _output__.writeInt32(1, __v)
+        }
+      };
+      origin.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd = {
+      var __limit = this.limit
+      var __origin = this.origin
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 8 =>
+            __limit = _input__.readInt32()
+          case 18 =>
+            __origin = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __origin.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd(
+          limit = __limit,
+          origin = __origin
+      )
+    }
+    def withLimit(__v: Int): CourierRecommendationCmd = copy(limit = __v)
+    def getOrigin: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = origin.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+    def clearOrigin: CourierRecommendationCmd = copy(origin = None)
+    def withOrigin(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CourierRecommendationCmd = copy(origin = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = limit
+          if (__t != 0) __t else null
+        }
+        case 2 => origin.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PInt(limit)
+        case 2 => origin.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd
+}
+
+object CourierRecommendationCmd extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd(
+      __fieldsMap.getOrElse(__fields.get(0), 0).asInstanceOf[Int],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[Int]).getOrElse(0),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(18)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(18)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd(
+  )
+  implicit class CourierRecommendationCmdLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationCmd](_l) {
+    def limit: _root_.com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.limit)((c_, f_) => c_.copy(limit = f_))
+    def origin: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getOrigin)((c_, f_) => c_.copy(origin = Some(f_)))
+    def optionalOrigin: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.origin)((c_, f_) => c_.copy(origin = f_))
+  }
+  final val LIMIT_FIELD_NUMBER = 1
+  final val ORIGIN_FIELD_NUMBER = 2
+}
+
+/** @param grids
+  *   The grid square that were searched
+  */
+@SerialVersionUID(0L)
+final case class CourierRecommendationMessage(
+    couriers: _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] = _root_.scala.collection.Seq.empty,
+    grids: _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = _root_.scala.collection.Seq.empty
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierRecommendationMessage] with com.trueaccord.lenses.Updatable[CourierRecommendationMessage] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      couriers.foreach(couriers => __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(couriers.serializedSize) + couriers.serializedSize)
+      grids.foreach(grids => __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(grids.serializedSize) + grids.serializedSize)
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      couriers.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      grids.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage = {
+      val __couriers = (_root_.scala.collection.immutable.Vector.newBuilder[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] ++= this.couriers)
+      val __grids = (_root_.scala.collection.immutable.Vector.newBuilder[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] ++= this.grids)
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __couriers += _root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage.defaultInstance)
+          case 18 =>
+            __grids += _root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage(
+          couriers = __couriers.result(),
+          grids = __grids.result()
+      )
+    }
+    def clearCouriers = copy(couriers = _root_.scala.collection.Seq.empty)
+    def addCouriers(__vs: com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage*): CourierRecommendationMessage = addAllCouriers(__vs)
+    def addAllCouriers(__vs: TraversableOnce[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]): CourierRecommendationMessage = copy(couriers = couriers ++ __vs)
+    def withCouriers(__v: _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]): CourierRecommendationMessage = copy(couriers = __v)
+    def clearGrids = copy(grids = _root_.scala.collection.Seq.empty)
+    def addGrids(__vs: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates*): CourierRecommendationMessage = addAllGrids(__vs)
+    def addAllGrids(__vs: TraversableOnce[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]): CourierRecommendationMessage = copy(grids = grids ++ __vs)
+    def withGrids(__v: _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]): CourierRecommendationMessage = copy(grids = __v)
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => couriers
+        case 2 => grids
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PRepeated(couriers.map(_.toPMessage)(_root_.scala.collection.breakOut))
+        case 2 => _root_.scalapb.descriptors.PRepeated(grids.map(_.toPMessage)(_root_.scala.collection.breakOut))
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage
+}
+
+object CourierRecommendationMessage extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage(
+      __fieldsMap.getOrElse(__fields.get(0), Nil).asInstanceOf[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]],
+      __fieldsMap.getOrElse(__fields.get(1), Nil).asInstanceOf[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]]).getOrElse(_root_.scala.collection.Seq.empty),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]).getOrElse(_root_.scala.collection.Seq.empty)
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(19)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(19)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 1 => __out = com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage(
+  )
+  implicit class CourierRecommendationMessageLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierRecommendationMessage](_l) {
+    def couriers: _root_.com.trueaccord.lenses.Lens[UpperPB, _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]] = field(_.couriers)((c_, f_) => c_.copy(couriers = f_))
+    def grids: _root_.com.trueaccord.lenses.Lens[UpperPB, _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]] = field(_.grids)((c_, f_) => c_.copy(grids = f_))
+  }
+  final val COURIERS_FIELD_NUMBER = 1
+  final val GRIDS_FIELD_NUMBER = 2
+}
+
+@SerialVersionUID(0L)
+final case class CourierDistanceMessage(
+    courierId: String = "",
+    distance: Double = 0.0
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierDistanceMessage] with com.trueaccord.lenses.Updatable[CourierDistanceMessage] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (courierId != "") { __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, courierId) }
+      if (distance != 0.0) { __size += _root_.com.google.protobuf.CodedOutputStream.computeDoubleSize(2, distance) }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = courierId
+        if (__v != "") {
+          _output__.writeString(1, __v)
+        }
+      };
+      {
+        val __v = distance
+        if (__v != 0.0) {
+          _output__.writeDouble(2, __v)
+        }
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage = {
+      var __courierId = this.courierId
+      var __distance = this.distance
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __courierId = _input__.readString()
+          case 17 =>
+            __distance = _input__.readDouble()
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage(
+          courierId = __courierId,
+          distance = __distance
+      )
+    }
+    def withCourierId(__v: String): CourierDistanceMessage = copy(courierId = __v)
+    def withDistance(__v: Double): CourierDistanceMessage = copy(distance = __v)
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = courierId
+          if (__t != "") __t else null
+        }
+        case 2 => {
+          val __t = distance
+          if (__t != 0.0) __t else null
+        }
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PString(courierId)
+        case 2 => _root_.scalapb.descriptors.PDouble(distance)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage
+}
+
+object CourierDistanceMessage extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage(
+      __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
+      __fieldsMap.getOrElse(__fields.get(1), 0.0).asInstanceOf[Double]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse(""),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[Double]).getOrElse(0.0)
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(20)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(20)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage(
+  )
+  implicit class CourierDistanceMessageLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage](_l) {
+    def courierId: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.courierId)((c_, f_) => c_.copy(courierId = f_))
+    def distance: _root_.com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.distance)((c_, f_) => c_.copy(distance = f_))
+  }
+  final val COURIER_ID_FIELD_NUMBER = 1
+  final val DISTANCE_FIELD_NUMBER = 2
+}
+
+/** x and y represent the square in the grid in which to look for couriers
+  */
+@SerialVersionUID(0L)
+final case class CourierListCmd(
+    limit: Int = 0,
+    origin: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None,
+    grid: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierListCmd] with com.trueaccord.lenses.Updatable[CourierListCmd] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (limit != 0) { __size += _root_.com.google.protobuf.CodedOutputStream.computeInt32Size(1, limit) }
+      if (origin.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(origin.get.serializedSize) + origin.get.serializedSize }
+      if (grid.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(grid.get.serializedSize) + grid.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = limit
+        if (__v != 0) {
+          _output__.writeInt32(1, __v)
+        }
+      };
+      origin.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      grid.foreach { __v =>
+        _output__.writeTag(3, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd = {
+      var __limit = this.limit
+      var __origin = this.origin
+      var __grid = this.grid
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 8 =>
+            __limit = _input__.readInt32()
+          case 18 =>
+            __origin = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __origin.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
+          case 26 =>
+            __grid = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd(
+          limit = __limit,
+          origin = __origin,
+          grid = __grid
+      )
+    }
+    def withLimit(__v: Int): CourierListCmd = copy(limit = __v)
+    def getOrigin: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = origin.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+    def clearOrigin: CourierListCmd = copy(origin = None)
+    def withOrigin(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CourierListCmd = copy(origin = Some(__v))
+    def getGrid: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)
+    def clearGrid: CourierListCmd = copy(grid = None)
+    def withGrid(__v: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates): CourierListCmd = copy(grid = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = limit
+          if (__t != 0) __t else null
+        }
+        case 2 => origin.orNull
+        case 3 => grid.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PInt(limit)
+        case 2 => origin.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+        case 3 => grid.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd
+}
+
+object CourierListCmd extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd(
+      __fieldsMap.getOrElse(__fields.get(0), 0).asInstanceOf[Int],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]],
+      __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[Int]).getOrElse(0),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(3).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(21)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(21)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+      case 3 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd(
+  )
+  implicit class CourierListCmdLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierListCmd](_l) {
+    def limit: _root_.com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.limit)((c_, f_) => c_.copy(limit = f_))
+    def origin: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getOrigin)((c_, f_) => c_.copy(origin = Some(f_)))
+    def optionalOrigin: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.origin)((c_, f_) => c_.copy(origin = f_))
+    def grid: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = field(_.getGrid)((c_, f_) => c_.copy(grid = Some(f_)))
+    def optionalGrid: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]] = field(_.grid)((c_, f_) => c_.copy(grid = f_))
+  }
+  final val LIMIT_FIELD_NUMBER = 1
+  final val ORIGIN_FIELD_NUMBER = 2
+  final val GRID_FIELD_NUMBER = 3
+}
+
+@SerialVersionUID(0L)
+final case class CourierListMessage(
+    couriers: _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] = _root_.scala.collection.Seq.empty,
+    grid: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CourierListMessage] with com.trueaccord.lenses.Updatable[CourierListMessage] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      couriers.foreach(couriers => __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(couriers.serializedSize) + couriers.serializedSize)
+      if (grid.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(grid.get.serializedSize) + grid.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      couriers.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      grid.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage = {
+      val __couriers = (_root_.scala.collection.immutable.Vector.newBuilder[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage] ++= this.couriers)
+      var __grid = this.grid
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __couriers += _root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage.defaultInstance)
+          case 18 =>
+            __grid = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage(
+          couriers = __couriers.result(),
+          grid = __grid
+      )
+    }
+    def clearCouriers = copy(couriers = _root_.scala.collection.Seq.empty)
+    def addCouriers(__vs: com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage*): CourierListMessage = addAllCouriers(__vs)
+    def addAllCouriers(__vs: TraversableOnce[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]): CourierListMessage = copy(couriers = couriers ++ __vs)
+    def withCouriers(__v: _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]): CourierListMessage = copy(couriers = __v)
+    def getGrid: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)
+    def clearGrid: CourierListMessage = copy(grid = None)
+    def withGrid(__v: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates): CourierListMessage = copy(grid = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => couriers
+        case 2 => grid.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PRepeated(couriers.map(_.toPMessage)(_root_.scala.collection.breakOut))
+        case 2 => grid.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage
+}
+
+object CourierListMessage extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage(
+      __fieldsMap.getOrElse(__fields.get(0), Nil).asInstanceOf[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]]).getOrElse(_root_.scala.collection.Seq.empty),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(22)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(22)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 1 => __out = com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage(
+  )
+  implicit class CourierListMessageLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierListMessage](_l) {
+    def couriers: _root_.com.trueaccord.lenses.Lens[UpperPB, _root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.CourierDistanceMessage]] = field(_.couriers)((c_, f_) => c_.copy(couriers = f_))
+    def grid: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = field(_.getGrid)((c_, f_) => c_.copy(grid = Some(f_)))
+    def optionalGrid: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]] = field(_.grid)((c_, f_) => c_.copy(grid = f_))
+  }
+  final val COURIERS_FIELD_NUMBER = 1
+  final val GRID_FIELD_NUMBER = 2
+}
+
+@SerialVersionUID(0L)
+final case class GridCourierStatusCmd(
+    msg: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage] = None,
+    grid: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridCourierStatusCmd] with com.trueaccord.lenses.Updatable[GridCourierStatusCmd] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (msg.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(msg.get.serializedSize) + msg.get.serializedSize }
+      if (grid.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(grid.get.serializedSize) + grid.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      msg.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      grid.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd = {
+      var __msg = this.msg
+      var __grid = this.grid
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __msg = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __msg.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage.defaultInstance)))
+          case 18 =>
+            __grid = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd(
+          msg = __msg,
+          grid = __grid
+      )
+    }
+    def getMsg: com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage = msg.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage.defaultInstance)
+    def clearMsg: GridCourierStatusCmd = copy(msg = None)
+    def withMsg(__v: com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage): GridCourierStatusCmd = copy(msg = Some(__v))
+    def getGrid: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)
+    def clearGrid: GridCourierStatusCmd = copy(grid = None)
+    def withGrid(__v: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates): GridCourierStatusCmd = copy(grid = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => msg.orNull
+        case 2 => grid.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => msg.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+        case 2 => grid.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd
+}
+
+object GridCourierStatusCmd extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd(
+      __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage]],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage]]),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(23)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(23)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 1 => __out = com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd(
+  )
+  implicit class GridCourierStatusCmdLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCourierStatusCmd](_l) {
+    def msg: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage] = field(_.getMsg)((c_, f_) => c_.copy(msg = Some(f_)))
+    def optionalMsg: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierStatusMessage]] = field(_.msg)((c_, f_) => c_.copy(msg = f_))
+    def grid: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = field(_.getGrid)((c_, f_) => c_.copy(grid = Some(f_)))
+    def optionalGrid: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]] = field(_.grid)((c_, f_) => c_.copy(grid = f_))
+  }
+  final val MSG_FIELD_NUMBER = 1
+  final val GRID_FIELD_NUMBER = 2
+}
+
+/** Semantically, evt.coordinates must be inside the square defined by grid
+  */
+@SerialVersionUID(0L)
+final case class GridCourierEnterCmd(
+    msg: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = None,
+    grid: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridCourierEnterCmd] with com.trueaccord.lenses.Updatable[GridCourierEnterCmd] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (msg.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(msg.get.serializedSize) + msg.get.serializedSize }
+      if (grid.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(grid.get.serializedSize) + grid.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      msg.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      grid.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd = {
+      var __msg = this.msg
+      var __grid = this.grid
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __msg = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __msg.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage.defaultInstance)))
+          case 18 =>
+            __grid = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd(
+          msg = __msg,
+          grid = __grid
+      )
+    }
+    def getMsg: com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage = msg.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage.defaultInstance)
+    def clearMsg: GridCourierEnterCmd = copy(msg = None)
+    def withMsg(__v: com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage): GridCourierEnterCmd = copy(msg = Some(__v))
+    def getGrid: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)
+    def clearGrid: GridCourierEnterCmd = copy(grid = None)
+    def withGrid(__v: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates): GridCourierEnterCmd = copy(grid = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => msg.orNull
+        case 2 => grid.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => msg.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+        case 2 => grid.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd
+}
+
+object GridCourierEnterCmd extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd(
+      __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]]),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(24)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(24)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 1 => __out = com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd(
+  )
+  implicit class GridCourierEnterCmdLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCourierEnterCmd](_l) {
+    def msg: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = field(_.getMsg)((c_, f_) => c_.copy(msg = Some(f_)))
+    def optionalMsg: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]] = field(_.msg)((c_, f_) => c_.copy(msg = f_))
+    def grid: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = field(_.getGrid)((c_, f_) => c_.copy(grid = Some(f_)))
+    def optionalGrid: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]] = field(_.grid)((c_, f_) => c_.copy(grid = f_))
+  }
+  final val MSG_FIELD_NUMBER = 1
+  final val GRID_FIELD_NUMBER = 2
+}
+
+/** Semantically, evt.prev_coordinates must be inside the square defined by grid
+  */
+@SerialVersionUID(0L)
+final case class GridCourierLeaveCmd(
+    msg: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = None,
+    grid: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridCourierLeaveCmd] with com.trueaccord.lenses.Updatable[GridCourierLeaveCmd] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (msg.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(msg.get.serializedSize) + msg.get.serializedSize }
+      if (grid.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(grid.get.serializedSize) + grid.get.serializedSize }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      msg.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      grid.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd = {
+      var __msg = this.msg
+      var __grid = this.grid
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __msg = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __msg.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage.defaultInstance)))
+          case 18 =>
+            __grid = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd(
+          msg = __msg,
+          grid = __grid
+      )
+    }
+    def getMsg: com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage = msg.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage.defaultInstance)
+    def clearMsg: GridCourierLeaveCmd = copy(msg = None)
+    def withMsg(__v: com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage): GridCourierLeaveCmd = copy(msg = Some(__v))
+    def getGrid: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates = grid.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates.defaultInstance)
+    def clearGrid: GridCourierLeaveCmd = copy(grid = None)
+    def withGrid(__v: com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates): GridCourierLeaveCmd = copy(grid = Some(__v))
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => msg.orNull
+        case 2 => grid.orNull
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => msg.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+        case 2 => grid.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd
+}
+
+object GridCourierLeaveCmd extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd(
+      __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]],
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]]),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]])
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(25)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(25)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 1 => __out = com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage
+      case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd(
+  )
+  implicit class GridCourierLeaveCmdLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCourierLeaveCmd](_l) {
+    def msg: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = field(_.getMsg)((c_, f_) => c_.copy(msg = Some(f_)))
+    def optionalMsg: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]] = field(_.msg)((c_, f_) => c_.copy(msg = f_))
+    def grid: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates] = field(_.getGrid)((c_, f_) => c_.copy(grid = Some(f_)))
+    def optionalGrid: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.GridCoordinates]] = field(_.grid)((c_, f_) => c_.copy(grid = f_))
+  }
+  final val MSG_FIELD_NUMBER = 1
+  final val GRID_FIELD_NUMBER = 2
+}
+
+@SerialVersionUID(0L)
+final case class GridActorCourierEnterEvt(
+    courierId: String = "",
+    coordinates: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridActorCourierEnterEvt] with com.trueaccord.lenses.Updatable[GridActorCourierEnterEvt] with GridActorEvt {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
@@ -1848,7 +3217,7 @@ final case class CourierLocationMessage(
         __v.writeTo(_output__)
       };
     }
-    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage = {
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt = {
       var __courierId = this.courierId
       var __coordinates = this.coordinates
       var _done__ = false
@@ -1863,15 +3232,15 @@ final case class CourierLocationMessage(
           case tag => _input__.skipField(tag)
         }
       }
-      com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt(
           courierId = __courierId,
           coordinates = __coordinates
       )
     }
-    def withCourierId(__v: String): CourierLocationMessage = copy(courierId = __v)
+    def withCourierId(__v: String): GridActorCourierEnterEvt = copy(courierId = __v)
     def getCoordinates: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = coordinates.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
-    def clearCoordinates: CourierLocationMessage = copy(coordinates = None)
-    def withCoordinates(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CourierLocationMessage = copy(coordinates = Some(__v))
+    def clearCoordinates: GridActorCourierEnterEvt = copy(coordinates = None)
+    def withCoordinates(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): GridActorCourierEnterEvt = copy(coordinates = Some(__v))
     def getFieldByNumber(__fieldNumber: Int): scala.Any = {
       (__fieldNumber: @_root_.scala.unchecked) match {
         case 1 => {
@@ -1889,30 +3258,30 @@ final case class CourierLocationMessage(
       }
     }
     override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
-    def companion = com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt
 }
 
-object CourierLocationMessage extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = this
-  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage = {
+object GridActorCourierEnterEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt = {
     require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
     val __fields = javaDescriptor.getFields
-    com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+    com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
       __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]
     )
   }
-  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage] = _root_.scalapb.descriptors.Reads{
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt] = _root_.scalapb.descriptors.Reads{
     case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
       require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
-      com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt(
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse(""),
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]])
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
-  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(15)
-  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(15)
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(26)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(26)
   def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     (__fieldNumber: @_root_.scala.unchecked) match {
@@ -1921,9 +3290,9 @@ object CourierLocationMessage extends com.trueaccord.scalapb.GeneratedMessageCom
     __out
   }
   def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
-  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage(
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt(
   )
-  implicit class CourierLocationMessageLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.CourierLocationMessage](_l) {
+  implicit class GridActorCourierEnterEvtLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierEnterEvt](_l) {
     def courierId: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.courierId)((c_, f_) => c_.copy(courierId = f_))
     def coordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getCoordinates)((c_, f_) => c_.copy(coordinates = Some(f_)))
     def optionalCoordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.coordinates)((c_, f_) => c_.copy(coordinates = f_))
@@ -1932,47 +3301,388 @@ object CourierLocationMessage extends com.trueaccord.scalapb.GeneratedMessageCom
   final val COORDINATES_FIELD_NUMBER = 2
 }
 
+@SerialVersionUID(0L)
+final case class GridActorCourierLeaveEvt(
+    courierId: String = ""
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridActorCourierLeaveEvt] with com.trueaccord.lenses.Updatable[GridActorCourierLeaveEvt] with GridActorEvt {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      if (courierId != "") { __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, courierId) }
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      {
+        val __v = courierId
+        if (__v != "") {
+          _output__.writeString(1, __v)
+        }
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt = {
+      var __courierId = this.courierId
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __courierId = _input__.readString()
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt(
+          courierId = __courierId
+      )
+    }
+    def withCourierId(__v: String): GridActorCourierLeaveEvt = copy(courierId = __v)
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => {
+          val __t = courierId
+          if (__t != "") __t else null
+        }
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PString(courierId)
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt
+}
+
+object GridActorCourierLeaveEvt extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt(
+      __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String]
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse("")
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(27)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(27)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__fieldNumber)
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt(
+  )
+  implicit class GridActorCourierLeaveEvtLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorCourierLeaveEvt](_l) {
+    def courierId: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.courierId)((c_, f_) => c_.copy(courierId = f_))
+  }
+  final val COURIER_ID_FIELD_NUMBER = 1
+}
+
+@SerialVersionUID(0L)
+final case class GridActorState(
+    coordinates: scala.collection.immutable.Map[String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = scala.collection.immutable.Map.empty
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[GridActorState] with com.trueaccord.lenses.Updatable[GridActorState] {
+    @transient
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
+      var __size = 0
+      coordinates.foreach(coordinates => __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toBase(coordinates).serializedSize) + com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toBase(coordinates).serializedSize)
+      __size
+    }
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+      coordinates.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toBase(__v).serializedSize)
+        com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toBase(__v).writeTo(_output__)
+      };
+    }
+    def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridActorState = {
+      val __coordinates = (scala.collection.immutable.Map.newBuilder[String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] ++= this.coordinates)
+      var _done__ = false
+      while (!_done__) {
+        val _tag__ = _input__.readTag()
+        _tag__ match {
+          case 0 => _done__ = true
+          case 10 =>
+            __coordinates += com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toCustom(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry.defaultInstance))
+          case tag => _input__.skipField(tag)
+        }
+      }
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorState(
+          coordinates = __coordinates.result()
+      )
+    }
+    def clearCoordinates = copy(coordinates = scala.collection.immutable.Map.empty)
+    def addCoordinates(__vs: (String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates)*): GridActorState = addAllCoordinates(__vs)
+    def addAllCoordinates(__vs: TraversableOnce[(String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates)]): GridActorState = copy(coordinates = coordinates ++ __vs)
+    def withCoordinates(__v: scala.collection.immutable.Map[String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates]): GridActorState = copy(coordinates = __v)
+    def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 1 => coordinates.map(com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toBase(_))(_root_.scala.collection.breakOut)
+      }
+    }
+    def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+      require(__field.containingMessage eq companion.scalaDescriptor)
+      (__field.number: @_root_.scala.unchecked) match {
+        case 1 => _root_.scalapb.descriptors.PRepeated(coordinates.map(com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toBase(_).toPMessage)(_root_.scala.collection.breakOut))
+      }
+    }
+    override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+    def companion = com.lmlt.actor.example.courier.realtime.service.message.GridActorState
+}
+
+object GridActorState extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorState] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorState] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridActorState = {
+    require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+    val __fields = javaDescriptor.getFields
+    com.lmlt.actor.example.courier.realtime.service.message.GridActorState(
+      __fieldsMap.getOrElse(__fields.get(0), Nil).asInstanceOf[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry]].map(com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toCustom(_))(_root_.scala.collection.breakOut)
+    )
+  }
+  implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridActorState] = _root_.scalapb.descriptors.Reads{
+    case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+      require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorState(
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[_root_.scala.collection.Seq[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry]]).getOrElse(_root_.scala.collection.Seq.empty).map(com.lmlt.actor.example.courier.realtime.service.message.GridActorState._typemapper_coordinates.toCustom(_))(_root_.scala.collection.breakOut)
+      )
+    case _ => throw new RuntimeException("Expected PMessage")
+  }
+  def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = MessageProto.javaDescriptor.getMessageTypes.get(28)
+  def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = MessageProto.scalaDescriptor.messages(28)
+  def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    (__fieldNumber: @_root_.scala.unchecked) match {
+      case 1 => __out = com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry
+    }
+    __out
+  }
+  def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+  lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridActorState(
+  )
+  @SerialVersionUID(0L)
+  final case class CoordinatesEntry(
+      key: String = "",
+      value: scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = None
+      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[CoordinatesEntry] with com.trueaccord.lenses.Updatable[CoordinatesEntry] {
+      @transient
+      private[this] var __serializedSizeCachedValue: Int = 0
+      private[this] def __computeSerializedValue(): Int = {
+        var __size = 0
+        if (key != "") { __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, key) }
+        if (value.isDefined) { __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(value.get.serializedSize) + value.get.serializedSize }
+        __size
+      }
+      final override def serializedSize: Int = {
+        var read = __serializedSizeCachedValue
+        if (read == 0) {
+          read = __computeSerializedValue()
+          __serializedSizeCachedValue = read
+        }
+        read
+      }
+      def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): Unit = {
+        {
+          val __v = key
+          if (__v != "") {
+            _output__.writeString(1, __v)
+          }
+        };
+        value.foreach { __v =>
+          _output__.writeTag(2, 2)
+          _output__.writeUInt32NoTag(__v.serializedSize)
+          __v.writeTo(_output__)
+        };
+      }
+      def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry = {
+        var __key = this.key
+        var __value = this.value
+        var _done__ = false
+        while (!_done__) {
+          val _tag__ = _input__.readTag()
+          _tag__ match {
+            case 0 => _done__ = true
+            case 10 =>
+              __key = _input__.readString()
+            case 18 =>
+              __value = Some(_root_.com.trueaccord.scalapb.LiteParser.readMessage(_input__, __value.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)))
+            case tag => _input__.skipField(tag)
+          }
+        }
+        com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry(
+            key = __key,
+            value = __value
+        )
+      }
+      def withKey(__v: String): CoordinatesEntry = copy(key = __v)
+      def getValue: com.lmlt.actor.example.courier.realtime.service.message.Coordinates = value.getOrElse(com.lmlt.actor.example.courier.realtime.service.message.Coordinates.defaultInstance)
+      def clearValue: CoordinatesEntry = copy(value = None)
+      def withValue(__v: com.lmlt.actor.example.courier.realtime.service.message.Coordinates): CoordinatesEntry = copy(value = Some(__v))
+      def getFieldByNumber(__fieldNumber: Int): scala.Any = {
+        (__fieldNumber: @_root_.scala.unchecked) match {
+          case 1 => {
+            val __t = key
+            if (__t != "") __t else null
+          }
+          case 2 => value.orNull
+        }
+      }
+      def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
+        require(__field.containingMessage eq companion.scalaDescriptor)
+        (__field.number: @_root_.scala.unchecked) match {
+          case 1 => _root_.scalapb.descriptors.PString(key)
+          case 2 => value.map(_.toPMessage).getOrElse(_root_.scalapb.descriptors.PEmpty)
+        }
+      }
+      override def toString: String = _root_.com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+      def companion = com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry
+  }
+  
+  object CoordinatesEntry extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry] {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry] = this
+    def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[_root_.com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry = {
+      require(__fieldsMap.keys.forall(_.getContainingType() == javaDescriptor), "FieldDescriptor does not match message type.")
+      val __fields = javaDescriptor.getFields
+      com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry(
+        __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
+        __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]]
+      )
+    }
+    implicit def messageReads: _root_.scalapb.descriptors.Reads[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry] = _root_.scalapb.descriptors.Reads{
+      case _root_.scalapb.descriptors.PMessage(__fieldsMap) =>
+        require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
+        com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry(
+          __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[String]).getOrElse(""),
+          __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).flatMap(_.as[scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]])
+        )
+      case _ => throw new RuntimeException("Expected PMessage")
+    }
+    def javaDescriptor: _root_.com.google.protobuf.Descriptors.Descriptor = com.lmlt.actor.example.courier.realtime.service.message.GridActorState.javaDescriptor.getNestedTypes.get(0)
+    def scalaDescriptor: _root_.scalapb.descriptors.Descriptor = com.lmlt.actor.example.courier.realtime.service.message.GridActorState.scalaDescriptor.nestedMessages(0)
+    def messageCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+      var __out: _root_.com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+      (__fieldNumber: @_root_.scala.unchecked) match {
+        case 2 => __out = com.lmlt.actor.example.courier.realtime.service.message.Coordinates
+      }
+      __out
+    }
+    def enumCompanionForFieldNumber(__fieldNumber: Int): _root_.com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__fieldNumber)
+    lazy val defaultInstance = com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry(
+    )
+    implicit class CoordinatesEntryLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry](_l) {
+      def key: _root_.com.trueaccord.lenses.Lens[UpperPB, String] = field(_.key)((c_, f_) => c_.copy(key = f_))
+      def value: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.Coordinates] = field(_.getValue)((c_, f_) => c_.copy(value = Some(f_)))
+      def optionalValue: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.value)((c_, f_) => c_.copy(value = f_))
+    }
+    final val KEY_FIELD_NUMBER = 1
+    final val VALUE_FIELD_NUMBER = 2
+    implicit val keyValueMapper: _root_.com.trueaccord.scalapb.TypeMapper[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry, (String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates)] =
+      _root_.com.trueaccord.scalapb.TypeMapper[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry, (String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates)](__m => (__m.key, __m.getValue))(__p => com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry(__p._1, Some(__p._2)))
+  }
+  
+  implicit class GridActorStateLens[UpperPB](_l: _root_.com.trueaccord.lenses.Lens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorState]) extends _root_.com.trueaccord.lenses.ObjectLens[UpperPB, com.lmlt.actor.example.courier.realtime.service.message.GridActorState](_l) {
+    def coordinates: _root_.com.trueaccord.lenses.Lens[UpperPB, scala.collection.immutable.Map[String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates]] = field(_.coordinates)((c_, f_) => c_.copy(coordinates = f_))
+  }
+  final val COORDINATES_FIELD_NUMBER = 1
+  @transient
+  private val _typemapper_coordinates: _root_.com.trueaccord.scalapb.TypeMapper[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry, (String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates)] = implicitly[_root_.com.trueaccord.scalapb.TypeMapper[com.lmlt.actor.example.courier.realtime.service.message.GridActorState.CoordinatesEntry, (String, com.lmlt.actor.example.courier.realtime.service.message.Coordinates)]]
+}
+
 object MessageProto {
   private lazy val ProtoBytes: Array[Byte] =
       com.trueaccord.scalapb.Encoding.fromBase64(scala.collection.Seq(
   """Cg1tZXNzYWdlLnByb3RvEi9jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZRoVc2NhbGFwY
   i9zY2FsYXBiLnByb3RvIkcKC0Nvb3JkaW5hdGVzEhwKCWxvbmdpdHVkZRgBIAEoAVIJbG9uZ2l0dWRlEhoKCGxhdGl0dWRlGAIgA
-  SgBUghsYXRpdHVkZSLGAQoMTG9jYXRpb25QaW5nEhkKCHRyYWNlX2lkGAEgASgJUgd0cmFjZUlkEhwKCXRpbWVzdGFtcBgCIAEoA
-  1IJdGltZXN0YW1wEh0KCmNvdXJpZXJfaWQYAyABKAlSCWNvdXJpZXJJZBJeCgtjb29yZGluYXRlcxgEIAEoCzI8LmNvbS5sbWx0L
-  mFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkNvb3JkaW5hdGVzUgtjb29yZGluYXRlcyK3AQoOS2luZXNpc
-  01lc3NhZ2USJAoOa2luZXNpc19zZXFfbnIYASABKAlSDGtpbmVzaXNTZXFOchJkCg1sb2NhdGlvbl9waW5nGAsgASgLMj0uY29tL
-  mxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuTG9jYXRpb25QaW5nSABSDGxvY2F0aW9uUGluZ0IZC
-  hdraW5lc2lzX21lc3NhZ2VfcGF5bG9hZCIuChZDb3VyaWVyQWN0b3JPZmZsaW5lQ21kOhTiPxEKD0NvdXJpZXJBY3RvckNtZCKyA
-  QoVQ291cmllckFjdG9yU3RhdHVzRXZ0EhwKCXRpbWVzdGFtcBgBIAEoA1IJdGltZXN0YW1wEmUKDmNvdXJpZXJfc3RhdHVzGAIgA
-  SgOMj4uY29tLmxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuQ291cmllclN0YXR1c1INY291cmllc
-  lN0YXR1czoU4j8RCg9Db3VyaWVyQWN0b3JFdnQirQEKF0NvdXJpZXJBY3RvckxvY2F0aW9uRXZ0EhwKCXRpbWVzdGFtcBgBIAEoA
-  1IJdGltZXN0YW1wEl4KC2Nvb3JkaW5hdGVzGAIgASgLMjwuY29tLmxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lL
-  nNlcnZpY2UuQ29vcmRpbmF0ZXNSC2Nvb3JkaW5hdGVzOhTiPxEKD0NvdXJpZXJBY3RvckV2dCLXAQoYQ291cmllck9ic2VydmVyU
-  3RhdHVzRXZ0EhwKCXRpbWVzdGFtcBgBIAEoA1IJdGltZXN0YW1wEh0KCmNvdXJpZXJfaWQYAiABKAlSCWNvdXJpZXJJZBJlCg5jb
-  3VyaWVyX3N0YXR1cxgDIAEoDjI+LmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkNvdXJpZ
-  XJTdGF0dXNSDWNvdXJpZXJTdGF0dXM6F+I/FAoSQ291cmllck9ic2VydmVyRXZ0ItIBChpDb3VyaWVyT2JzZXJ2ZXJMb2NhdGlvb
-  kV2dBIcCgl0aW1lc3RhbXAYASABKANSCXRpbWVzdGFtcBIdCgpjb3VyaWVyX2lkGAIgASgJUgljb3VyaWVySWQSXgoLY29vcmRpb
-  mF0ZXMYAyABKAsyPC5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db29yZGluYXRlc1ILY
-  29vcmRpbmF0ZXM6F+I/FAoSQ291cmllck9ic2VydmVyRXZ0Io4CChFDb3VyaWVyQWN0b3JTdGF0ZRIyChRsYXN0TWVzc2FnZVRpb
-  WVzdGFtcBgBIAEoA1IUbGFzdE1lc3NhZ2VUaW1lc3RhbXASZQoOY291cmllcl9zdGF0dXMYAiABKA4yPi5jb20ubG1sdC5hY3Rvc
-  i5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db3VyaWVyU3RhdHVzUg1jb3VyaWVyU3RhdHVzEl4KC2Nvb3JkaW5hd
-  GVzGAMgASgLMjwuY29tLmxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuQ29vcmRpbmF0ZXNSC2Nvb
-  3JkaW5hdGVzIqIBChtLaW5lc2lzQ29uc3VtZXJCb290c3RyYXBDbWQSHQoKYXdzX3JlZ2lvbhgBIAEoCVIJYXdzUmVnaW9uEi4KE
-  2tpZW5zaXNfc3RyZWFtX25hbWUYAiABKAlSEWtpZW5zaXNTdHJlYW1OYW1lEhsKCWVudGl0eV9pZBgDIAEoCVIIZW50aXR5SWQ6F
-  +I/FAoSS2luZXNpc0NvbnN1bWVyQ21kIjEKFktpbmVzaXNDb25zdW1lckxvb3BDbWQ6F+I/FAoSS2luZXNpc0NvbnN1bWVyQ21kI
-  oUBChtLaW5lc2lzQ29uc3VtZXJCb290c3RyYXBFdnQSHQoKYXdzX3JlZ2lvbhgBIAEoCVIJYXdzUmVnaW9uEi4KE2tpbmVzaXNfc
-  3RyZWFtX25hbWUYAiABKAlSEWtpbmVzaXNTdHJlYW1OYW1lOhfiPxQKEktpbmVzaXNDb25zdW1lckV2dCJeCh1LaW5lc2lzQ29uc
-  3VtZXJVcGRhdGVTZXFOckV2dBIkCg5raW5lc2lzX3NlcV9uchgBIAEoCVIMa2luZXNpc1NlcU5yOhfiPxQKEktpbmVzaXNDb25zd
-  W1lckV2dCKQAQoZS2luZXNpc0NvbnN1bWVyQWN0b3JTdGF0ZRIdCgphd3NfcmVnaW9uGAEgASgJUglhd3NSZWdpb24SLgoTa2luZ
-  XNpc19zdHJlYW1fbmFtZRgCIAEoCVIRa2luZXNpc1N0cmVhbU5hbWUSJAoOa2luZXNpc19zZXFfbnIYAyABKAlSDGtpbmVzaXNTZ
-  XFOciKxAQoUQ291cmllclN0YXR1c01lc3NhZ2USHQoKY291cmllcl9pZBgBIAEoCVIJY291cmllcklkEmUKDmNvdXJpZXJfc3Rhd
-  HVzGAIgASgOMj4uY29tLmxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuQ291cmllclN0YXR1c1INY
-  291cmllclN0YXR1czoT4j8QCg5Db3VyaWVyTWVzc2FnZSKsAQoWQ291cmllckxvY2F0aW9uTWVzc2FnZRIdCgpjb3VyaWVyX2lkG
-  AEgASgJUgljb3VyaWVySWQSXgoLY29vcmRpbmF0ZXMYAiABKAsyPC5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhb
-  HRpbWUuc2VydmljZS5Db29yZGluYXRlc1ILY29vcmRpbmF0ZXM6E+I/EAoOQ291cmllck1lc3NhZ2UqKAoNQ291cmllclN0YXR1c
-  xIKCgZPTkxJTkUQABILCgdPRkZMSU5FEAFCwgHiP74BIhxzZWFsZWQgdHJhaXQgQ291cmllckFjdG9yQ21kIhxzZWFsZWQgdHJha
-  XQgQ291cmllckFjdG9yRXZ0Ih9zZWFsZWQgdHJhaXQgQ291cmllck9ic2VydmVyRXZ0Ih9zZWFsZWQgdHJhaXQgS2luZXNpc0Nvb
-  nN1bWVyQ21kIh9zZWFsZWQgdHJhaXQgS2luZXNpc0NvbnN1bWVyRXZ0IhtzZWFsZWQgdHJhaXQgQ291cmllck1lc3NhZ2UoAWIGc
+  SgBUghsYXRpdHVkZSItCg9HcmlkQ29vcmRpbmF0ZXMSDAoBeBgBIAEoA1IBeBIMCgF5GAIgASgDUgF5IsYBCgxMb2NhdGlvblBpb
+  mcSGQoIdHJhY2VfaWQYASABKAlSB3RyYWNlSWQSHAoJdGltZXN0YW1wGAIgASgDUgl0aW1lc3RhbXASHQoKY291cmllcl9pZBgDI
+  AEoCVIJY291cmllcklkEl4KC2Nvb3JkaW5hdGVzGAQgASgLMjwuY29tLmxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0a
+  W1lLnNlcnZpY2UuQ29vcmRpbmF0ZXNSC2Nvb3JkaW5hdGVzIrcBCg5LaW5lc2lzTWVzc2FnZRIkCg5raW5lc2lzX3NlcV9uchgBI
+  AEoCVIMa2luZXNpc1NlcU5yEmQKDWxvY2F0aW9uX3BpbmcYCyABKAsyPS5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIuc
+  mVhbHRpbWUuc2VydmljZS5Mb2NhdGlvblBpbmdIAFIMbG9jYXRpb25QaW5nQhkKF2tpbmVzaXNfbWVzc2FnZV9wYXlsb2FkIi4KF
+  kNvdXJpZXJBY3Rvck9mZmxpbmVDbWQ6FOI/EQoPQ291cmllckFjdG9yQ21kIrIBChVDb3VyaWVyQWN0b3JTdGF0dXNFdnQSHAoJd
+  GltZXN0YW1wGAEgASgDUgl0aW1lc3RhbXASZQoOY291cmllcl9zdGF0dXMYAiABKA4yPi5jb20ubG1sdC5hY3Rvci5leGFtcGxlL
+  mNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db3VyaWVyU3RhdHVzUg1jb3VyaWVyU3RhdHVzOhTiPxEKD0NvdXJpZXJBY3RvckV2d
+  CKtAQoXQ291cmllckFjdG9yTG9jYXRpb25FdnQSHAoJdGltZXN0YW1wGAEgASgDUgl0aW1lc3RhbXASXgoLY29vcmRpbmF0ZXMYA
+  iABKAsyPC5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db29yZGluYXRlc1ILY29vcmRpb
+  mF0ZXM6FOI/EQoPQ291cmllckFjdG9yRXZ0ItcBChhDb3VyaWVyT2JzZXJ2ZXJTdGF0dXNFdnQSHAoJdGltZXN0YW1wGAEgASgDU
+  gl0aW1lc3RhbXASHQoKY291cmllcl9pZBgCIAEoCVIJY291cmllcklkEmUKDmNvdXJpZXJfc3RhdHVzGAMgASgOMj4uY29tLmxtb
+  HQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuQ291cmllclN0YXR1c1INY291cmllclN0YXR1czoX4j8UC
+  hJDb3VyaWVyT2JzZXJ2ZXJFdnQi0gEKGkNvdXJpZXJPYnNlcnZlckxvY2F0aW9uRXZ0EhwKCXRpbWVzdGFtcBgBIAEoA1IJdGltZ
+  XN0YW1wEh0KCmNvdXJpZXJfaWQYAiABKAlSCWNvdXJpZXJJZBJeCgtjb29yZGluYXRlcxgDIAEoCzI8LmNvbS5sbWx0LmFjdG9yL
+  mV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkNvb3JkaW5hdGVzUgtjb29yZGluYXRlczoX4j8UChJDb3VyaWVyT2JzZ
+  XJ2ZXJFdnQijgIKEUNvdXJpZXJBY3RvclN0YXRlEjIKFGxhc3RNZXNzYWdlVGltZXN0YW1wGAEgASgDUhRsYXN0TWVzc2FnZVRpb
+  WVzdGFtcBJlCg5jb3VyaWVyX3N0YXR1cxgCIAEoDjI+LmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZ
+  XJ2aWNlLkNvdXJpZXJTdGF0dXNSDWNvdXJpZXJTdGF0dXMSXgoLY29vcmRpbmF0ZXMYAyABKAsyPC5jb20ubG1sdC5hY3Rvci5le
+  GFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db29yZGluYXRlc1ILY29vcmRpbmF0ZXMiogEKG0tpbmVzaXNDb25zdW1lc
+  kJvb3RzdHJhcENtZBIdCgphd3NfcmVnaW9uGAEgASgJUglhd3NSZWdpb24SLgoTa2llbnNpc19zdHJlYW1fbmFtZRgCIAEoCVIRa
+  2llbnNpc1N0cmVhbU5hbWUSGwoJZW50aXR5X2lkGAMgASgJUghlbnRpdHlJZDoX4j8UChJLaW5lc2lzQ29uc3VtZXJDbWQiMQoWS
+  2luZXNpc0NvbnN1bWVyTG9vcENtZDoX4j8UChJLaW5lc2lzQ29uc3VtZXJDbWQihQEKG0tpbmVzaXNDb25zdW1lckJvb3RzdHJhc
+  EV2dBIdCgphd3NfcmVnaW9uGAEgASgJUglhd3NSZWdpb24SLgoTa2luZXNpc19zdHJlYW1fbmFtZRgCIAEoCVIRa2luZXNpc1N0c
+  mVhbU5hbWU6F+I/FAoSS2luZXNpc0NvbnN1bWVyRXZ0Il4KHUtpbmVzaXNDb25zdW1lclVwZGF0ZVNlcU5yRXZ0EiQKDmtpbmVza
+  XNfc2VxX25yGAEgASgJUgxraW5lc2lzU2VxTnI6F+I/FAoSS2luZXNpc0NvbnN1bWVyRXZ0IpABChlLaW5lc2lzQ29uc3VtZXJBY
+  3RvclN0YXRlEh0KCmF3c19yZWdpb24YASABKAlSCWF3c1JlZ2lvbhIuChNraW5lc2lzX3N0cmVhbV9uYW1lGAIgASgJUhFraW5lc
+  2lzU3RyZWFtTmFtZRIkCg5raW5lc2lzX3NlcV9uchgDIAEoCVIMa2luZXNpc1NlcU5yIpoCChRDb3VyaWVyU3RhdHVzTWVzc2FnZ
+  RIdCgpjb3VyaWVyX2lkGAEgASgJUgljb3VyaWVySWQSZQoOY291cmllcl9zdGF0dXMYAiABKA4yPi5jb20ubG1sdC5hY3Rvci5le
+  GFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db3VyaWVyU3RhdHVzUg1jb3VyaWVyU3RhdHVzEmcKEHByZXZfY29vcmRpb
+  mF0ZXMYAyABKAsyPC5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db29yZGluYXRlc1IPc
+  HJldkNvb3JkaW5hdGVzOhPiPxAKDkNvdXJpZXJNZXNzYWdlIpUCChZDb3VyaWVyTG9jYXRpb25NZXNzYWdlEh0KCmNvdXJpZXJfa
+  WQYASABKAlSCWNvdXJpZXJJZBJeCgtjb29yZGluYXRlcxgCIAEoCzI8LmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZ
+  WFsdGltZS5zZXJ2aWNlLkNvb3JkaW5hdGVzUgtjb29yZGluYXRlcxJnChBwcmV2X2Nvb3JkaW5hdGVzGAMgASgLMjwuY29tLmxtb
+  HQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuQ29vcmRpbmF0ZXNSD3ByZXZDb29yZGluYXRlczoT4j8QC
+  g5Db3VyaWVyTWVzc2FnZSKCAQoFUGxhY2USGQoIcGxhY2VfaWQYASABKAlSB3BsYWNlSWQSXgoLY29vcmRpbmF0ZXMYAiABKAsyP
+  C5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db29yZGluYXRlc1ILY29vcmRpbmF0ZXMih
+  gEKGENvdXJpZXJSZWNvbW1lbmRhdGlvbkNtZBIUCgVsaW1pdBgBIAEoBVIFbGltaXQSVAoGb3JpZ2luGAIgASgLMjwuY29tLmxtb
+  HQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuQ29vcmRpbmF0ZXNSBm9yaWdpbiLbAQocQ291cmllclJlY
+  29tbWVuZGF0aW9uTWVzc2FnZRJjCghjb3VyaWVycxgBIAMoCzJHLmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsd
+  GltZS5zZXJ2aWNlLkNvdXJpZXJEaXN0YW5jZU1lc3NhZ2VSCGNvdXJpZXJzElYKBWdyaWRzGAIgAygLMkAuY29tLmxtbHQuYWN0b
+  3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0aW1lLnNlcnZpY2UuR3JpZENvb3JkaW5hdGVzUgVncmlkcyJTChZDb3VyaWVyRGlzdGFuY
+  2VNZXNzYWdlEh0KCmNvdXJpZXJfaWQYASABKAlSCWNvdXJpZXJJZBIaCghkaXN0YW5jZRgCIAEoAVIIZGlzdGFuY2Ui0gEKDkNvd
+  XJpZXJMaXN0Q21kEhQKBWxpbWl0GAEgASgFUgVsaW1pdBJUCgZvcmlnaW4YAiABKAsyPC5jb20ubG1sdC5hY3Rvci5leGFtcGxlL
+  mNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db29yZGluYXRlc1IGb3JpZ2luElQKBGdyaWQYAyABKAsyQC5jb20ubG1sdC5hY3Rvc
+  i5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5HcmlkQ29vcmRpbmF0ZXNSBGdyaWQizwEKEkNvdXJpZXJMaXN0TWVzc
+  2FnZRJjCghjb3VyaWVycxgBIAMoCzJHLmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkNvd
+  XJpZXJEaXN0YW5jZU1lc3NhZ2VSCGNvdXJpZXJzElQKBGdyaWQYAiABKAsyQC5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZ
+  XIucmVhbHRpbWUuc2VydmljZS5HcmlkQ29vcmRpbmF0ZXNSBGdyaWQixQEKFEdyaWRDb3VyaWVyU3RhdHVzQ21kElcKA21zZxgBI
+  AEoCzJFLmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkNvdXJpZXJTdGF0dXNNZXNzYWdlU
+  gNtc2cSVAoEZ3JpZBgCIAEoCzJALmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkdyaWRDb
+  29yZGluYXRlc1IEZ3JpZCLGAQoTR3JpZENvdXJpZXJFbnRlckNtZBJZCgNtc2cYASABKAsyRy5jb20ubG1sdC5hY3Rvci5leGFtc
+  GxlLmNvdXJpZXIucmVhbHRpbWUuc2VydmljZS5Db3VyaWVyTG9jYXRpb25NZXNzYWdlUgNtc2cSVAoEZ3JpZBgCIAEoCzJALmNvb
+  S5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZS5zZXJ2aWNlLkdyaWRDb29yZGluYXRlc1IEZ3JpZCLGAQoTR3JpZ
+  ENvdXJpZXJMZWF2ZUNtZBJZCgNtc2cYASABKAsyRy5jb20ubG1sdC5hY3Rvci5leGFtcGxlLmNvdXJpZXIucmVhbHRpbWUuc2Vyd
+  mljZS5Db3VyaWVyTG9jYXRpb25NZXNzYWdlUgNtc2cSVAoEZ3JpZBgCIAEoCzJALmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291c
+  mllci5yZWFsdGltZS5zZXJ2aWNlLkdyaWRDb29yZGluYXRlc1IEZ3JpZCKsAQoYR3JpZEFjdG9yQ291cmllckVudGVyRXZ0Eh0KC
+  mNvdXJpZXJfaWQYASABKAlSCWNvdXJpZXJJZBJeCgtjb29yZGluYXRlcxgCIAEoCzI8LmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY
+  291cmllci5yZWFsdGltZS5zZXJ2aWNlLkNvb3JkaW5hdGVzUgtjb29yZGluYXRlczoR4j8OCgxHcmlkQWN0b3JFdnQiTAoYR3JpZ
+  EFjdG9yQ291cmllckxlYXZlRXZ0Eh0KCmNvdXJpZXJfaWQYASABKAlSCWNvdXJpZXJJZDoR4j8OCgxHcmlkQWN0b3JFdnQiggIKD
+  kdyaWRBY3RvclN0YXRlEnIKC2Nvb3JkaW5hdGVzGAEgAygLMlAuY29tLmxtbHQuYWN0b3IuZXhhbXBsZS5jb3VyaWVyLnJlYWx0a
+  W1lLnNlcnZpY2UuR3JpZEFjdG9yU3RhdGUuQ29vcmRpbmF0ZXNFbnRyeVILY29vcmRpbmF0ZXMafAoQQ29vcmRpbmF0ZXNFbnRye
+  RIQCgNrZXkYASABKAlSA2tleRJSCgV2YWx1ZRgCIAEoCzI8LmNvbS5sbWx0LmFjdG9yLmV4YW1wbGUuY291cmllci5yZWFsdGltZ
+  S5zZXJ2aWNlLkNvb3JkaW5hdGVzUgV2YWx1ZToCOAEqKAoNQ291cmllclN0YXR1cxIKCgZPTkxJTkUQABILCgdPRkZMSU5FEAFC3
+  QHiP9kBIhxzZWFsZWQgdHJhaXQgQ291cmllckFjdG9yQ21kIhxzZWFsZWQgdHJhaXQgQ291cmllckFjdG9yRXZ0Ih9zZWFsZWQgd
+  HJhaXQgQ291cmllck9ic2VydmVyRXZ0Ih9zZWFsZWQgdHJhaXQgS2luZXNpc0NvbnN1bWVyQ21kIh9zZWFsZWQgdHJhaXQgS2luZ
+  XNpc0NvbnN1bWVyRXZ0IhtzZWFsZWQgdHJhaXQgQ291cmllck1lc3NhZ2UiGXNlYWxlZCB0cmFpdCBHcmlkQWN0b3JFdnQoAWIGc
   HJvdG8z"""
       ).mkString)
   lazy val scalaDescriptor: _root_.scalapb.descriptors.FileDescriptor = {

@@ -1,0 +1,51 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "eu-west-1",
+    "source_ami": "ami-061b1560",
+    "instance_type": "t2.micro",
+    "vpc_id": "vpc-43cd0526", 
+    "subnet_id": "subnet-598f0a3c",
+    "associate_public_ip_address": true,
+    "ssh_username": "centos",
+    "ami_name": "Centos 7 x86_64 Oracle Java 8 aws-cfn-bootstrap {{timestamp}}"
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo yum update -y",
+        "sudo curl -O -L --header 'Cookie: oraclelicense=accept-securebackup-cookie' http://download.oracle.com/otn-pub/java/jdk/8u141-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-8u141-linux-x64.rpm",
+        "sudo rpm -ivh jdk-8u141-linux-x64.rpm",
+        "sudo rm jdk-8u141-linux-x64.rpm", 
+        "sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
+        "sudo yum update -y", 
+        "sudo yum -y install python-pip",
+        "sudo pip install pystache", 
+        "sudo pip install argparse",
+        "sudo pip install python-daemon", 
+        "sudo pip install requests",
+        "curl -sSL https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz | sudo tar -C /opt -zxpf -",
+        "cd /opt/aws-cfn-bootstrap-1.4/",
+        "sudo python setup.py build",
+        "sudo python setup.py install",
+        "sudo ln -s /usr/init/redhat/cfn-hup /etc/init.d/cfn-hup",
+        "sudo chmod 775 /usr/init/redhat/cfn-hup",
+        "cd /opt",
+        "sudo mkdir aws",
+        "cd aws",
+        "sudo mkdir bin",
+        "sudo ln -s /usr/bin/cfn-hup /opt/aws/bin/cfn-hup",
+        "sudo rm -rf /opt/aws-cfn-bootstrap-1.4",
+        "sudo pip install --upgrade awscli"
+      ]
+    }
+  ]
+}

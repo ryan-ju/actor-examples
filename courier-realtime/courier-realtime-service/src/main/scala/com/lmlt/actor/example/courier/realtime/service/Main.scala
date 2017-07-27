@@ -53,6 +53,11 @@ object Main {
 
     import JSONSupport._
     val route: Route = concat(
+      path("healthcheck") {
+        get {
+          complete("healthy")
+        }
+      },
       path("service") {
         handleWebSocketMessages(wsHandler)
       },

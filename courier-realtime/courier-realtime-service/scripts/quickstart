@@ -1,0 +1,1 @@
+JAVA_OPTS="-Dcom.sun.management.jmxremote.port=10001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dapplication.websocket.port=3001 -Dakka.remote.artery.canonical.port=2551" ./scripts/run.sh

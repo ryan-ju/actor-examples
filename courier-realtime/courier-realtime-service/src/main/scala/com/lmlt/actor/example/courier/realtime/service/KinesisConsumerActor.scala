@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.concurrent.duration._
+import kamon.Kamon
+import kamon.util.MeasurementUnit
 
 object KinesisConsumerMaster {
   def props[T](awsRegion: String, streamName: String, akkaShardRegion: String, akkaShardsNr: Int, snapshotAfterMessageNr: Long, processorActor: ActorRef): Props =
@@ -68,6 +70,7 @@ class KinesisConsumerMaster[T](awsRegion: String, streamName: String, akkaShardR
 
 object KinesisConsumerSlave {
   val loopCmd = KinesisConsumerLoopCmd()
+  val timeDiffGauge = Kamon.gauge("kinesis-read-delay", MeasurementUnit.time.milliseconds)
 
   val extractEntityId: ShardRegion.ExtractEntityId = {
     case msg@KinesisConsumerBootstrapCmd(_, _, entityId) => (entityId, msg)
@@ -124,12 +127,15 @@ class KinesisConsumerSlave[T](snapshotAfterMessageNr: Long, processorActor: Acto
     case _: KinesisConsumerLoopCmd => {
       val getRecordsRequest = new GetRecordsRequest()
         .withShardIterator(kinesisShardIterator)
-        .withLimit(25)
       val result = client.getRecords(getRecordsRequest)
       kinesisShardIterator = result.getNextShardIterator
       if (!result.getRecords.isEmpty) {
+        val first = result.getRecords.get(0)
+        // Record how far apart between the time of the first message in batch and now.  Increasing value means the consumer is slower than producer.
+        val diff = System.currentTimeMillis() - first.getApproximateArrivalTimestamp.getTime
+        timeDiffGauge.set(diff)
         persistAsync(KinesisConsumerUpdateSeqNrEvt(
-          kinesisSeqNr = result.getRecords.get(0).getSequenceNumber)
+          kinesisSeqNr = first.getSequenceNumber)
         )(updateState)
       }
       for (record <- result.getRecords.asScala) {

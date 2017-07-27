@@ -7,10 +7,16 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
+    dependencies {
+        classpath "gradle.plugin.com.github.mgk.gradle:s3:1.4.0"
+    }
 }
 
 apply plugin: 'scala'
 apply plugin: 'application'
+apply plugin: "com.github.mgk.gradle.s3"
+
+import com.github.mgk.gradle.*
 
 def protoDestDir = "src/main/protoc-generated"
 def protoFile = "../../courier-realtime-protobuf/message.proto"
@@ -54,6 +60,13 @@ task scalapbc {
             args = [protoFile, "--scala_out=${protoDestDir}", "--proto_path=${protoThirdParty}"]
         }
     }
+}
+
+task uploadS3(type: S3Upload) {
+    bucket = System.getProperty("customBucket")
+    key = "repo/${project.name}-${version}.tar"
+    file = new File("build/distributions/${project.name}-${version}.tar")
+    overwrite = true
 }
 
 compileScala {

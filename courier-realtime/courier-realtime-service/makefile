@@ -6,5 +6,9 @@ build: compile
 compile: 
 	gradle distTar
 
+distribute: build
+	@if test -z "$(bucket)"; then echo "Must set bucket parameter (used for uploading to S3)"; exit 1; fi 
+	gradle -DcustomBucket="$(bucket)" uploadS3
+
 clean: 
 	gradle clean

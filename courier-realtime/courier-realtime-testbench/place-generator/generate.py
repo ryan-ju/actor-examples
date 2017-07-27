@@ -81,14 +81,14 @@ def move_inside_bound(grid_size, places):
     result = []
     for place in places:
         if place[0] < 0:
-            x = -place[0]
+            x = -place[0] % grid_size
         elif place[0] > grid_size:
             x = grid_size - place[0] % grid_size
         else:
             x = place[0]
 
         if place[1] < 0:
-            y = -place[1]
+            y = -place[1] % grid_size
         elif place[1] > grid_size:
             y = grid_size - place[1] % grid_size
         else:
