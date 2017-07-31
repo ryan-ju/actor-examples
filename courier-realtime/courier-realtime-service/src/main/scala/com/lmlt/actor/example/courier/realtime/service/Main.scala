@@ -86,7 +86,7 @@ object Main {
       }
     )
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", system.settings.config.getInt("application.websocket.port"))
+    val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", system.settings.config.getInt("application.websocket.port"))
 
     bindingFuture.onFailure {
       case ex: Exception =>

@@ -71,6 +71,7 @@ class KinesisConsumerMaster[T](awsRegion: String, streamName: String, akkaShardR
 object KinesisConsumerSlave {
   val loopCmd = KinesisConsumerLoopCmd()
   val timeDiffGauge = Kamon.gauge("kinesis-read-delay", MeasurementUnit.time.milliseconds)
+  val messageCounter = Kamon.counter("kinesis-messages")
 
   val extractEntityId: ShardRegion.ExtractEntityId = {
     case msg@KinesisConsumerBootstrapCmd(_, _, entityId) => (entityId, msg)
@@ -127,6 +128,7 @@ class KinesisConsumerSlave[T](snapshotAfterMessageNr: Long, processorActor: Acto
     case _: KinesisConsumerLoopCmd => {
       val getRecordsRequest = new GetRecordsRequest()
         .withShardIterator(kinesisShardIterator)
+        .withLimit(1000)
       val result = client.getRecords(getRecordsRequest)
       kinesisShardIterator = result.getNextShardIterator
       if (!result.getRecords.isEmpty) {
@@ -136,14 +138,17 @@ class KinesisConsumerSlave[T](snapshotAfterMessageNr: Long, processorActor: Acto
         timeDiffGauge.set(diff)
         persistAsync(KinesisConsumerUpdateSeqNrEvt(
           kinesisSeqNr = first.getSequenceNumber)
-        )(updateState)
-      }
-      for (record <- result.getRecords.asScala) {
-        val message = KinesisMessage.parseFrom(record.getData.array()).copy(kinesisSeqNr = record.getSequenceNumber)
-        processorActor ! message
-        count += 1
-        if (count % snapshotAfterMessageNr == 0) {
-          saveSnapshot(state)
+        ) { event =>
+          updateState(event)
+          for (record <- result.getRecords.asScala) {
+            val message = KinesisMessage.parseFrom(record.getData.array()).copy(kinesisSeqNr = record.getSequenceNumber)
+            processorActor ! message
+            count += 1
+            messageCounter.increment()
+            if (count % snapshotAfterMessageNr == 0) {
+              saveSnapshot(state)
+            }
+          }
         }
       }
       // Continue the polling

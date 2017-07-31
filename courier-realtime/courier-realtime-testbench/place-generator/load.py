@@ -1,6 +1,36 @@
 import click
 from cassandra.cluster import Cluster
 import re
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor, wait
+
+class Counter:
+	'''A simple counter'''
+
+	def __init__(self):
+		self.i = 0
+		self.lock = threading.Lock()
+
+	def increment(self):
+		self.lock.acquire()
+		self.i += 1
+		self.lock.release()
+
+	def get(self):
+		return self.i
+
+def report_progress(counter):
+	while True:
+		print(f"Uploaded {counter.get()} records")
+		time.sleep(5)
+
+def insert_record(session, keyspace, cf, place_id, longitude, latitude, counter):
+	try:
+		session.execute(f"INSERT INTO {keyspace}.{cf} (place_id, longitude, latitude) VALUES ('{place_id}', {longitude}, {latitude})")
+		counter.increment()
+	except Exception as e:
+		print(e)
 
 @click.command()
 @click.option('--cluster', '-c', multiple=True)
@@ -30,12 +60,18 @@ def main(cluster, keyspace, replication, cf, file, delete):
 		session.execute(f"TRUNCATE TABLE {keyspace}.{cf}")
 
 	f = open(file, 'r')
-	counter = 0
+	pool = ThreadPoolExecutor(20)
+	futures = []
+	counter = Counter()
+	t = threading.Thread(target=report_progress, args=[counter])
+	t.daemon = True
+	t.start()
 	for line in f.read().splitlines():
 		parts = line.split(',')
-		session.execute(f"INSERT INTO {keyspace}.{cf} (place_id, longitude, latitude) VALUES ('{parts[0]}', {parts[1]}, {parts[2]})")
-		counter += 1
-	print(f"Wrote {counter} records to table")
+		futures.append(pool.submit(insert_record, session, keyspace, cf, parts[0], parts[1], parts[2], counter))
+
+	wait(futures)
+	print(f"Wrote {counter.get()} records to table")
 	f.close()
 
 	cluster.shutdown()

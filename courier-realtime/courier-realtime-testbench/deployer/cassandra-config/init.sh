@@ -2,14 +2,17 @@
 echo "==== Create /tmp/init ===="
 mkdir -p /tmp/init
 echo "==== Getting public IP ====" >> /tmp/init/init.log 2>&1
-PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) >> /tmp/init/init.log 2>&1
+export PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) >> /tmp/init/init.log 2>&1
 echo "==== PUBLIC_IP is $PUBLIC_IP ====" >> /tmp/init/init.log 2>&1
+echo "==== Get private IP ====" >> /tmp/init/init.log 2>&1
+export PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4) >> /tmp/init/init.log 2>&1
+echo "==== PRIVATE is $PRIVATE_IP ====" >> /tmp/init/init.log 2>&1
 echo "==== Disable bnconfig ====" >> /tmp/init/init.log 2>&1
 mv /opt/bitnami/cassandra/bnconfig /opt/bitnami/cassandra/bnconfig.disabled >> /tmp/init/init.log 2>&1
 echo "==== Copy cassandra.yaml ====" >> /tmp/init/init.log 2>&1
 cp ./cassandra.yaml /opt/bitnami/cassandra/conf/cassandra.yaml >> /tmp/init/init.log 2>&1
 echo "==== Replace parameters in cassandra.yaml ====" >> /tmp/init/init.log 2>&1
-sed -i -e s/{SEED_NODES}/$SEED_NODES/g /opt/bitnami/cassandra/conf/cassandra.yaml
+sed -i -e s/{SEED_NODES}/$SEED_NODES/g -e s/{PRIVATE_IP}/$PRIVATE_IP/g /opt/bitnami/cassandra/conf/cassandra.yaml
 echo "==== Copy cassandra-env.sh ====" >> /tmp/init/init.log 2>&1
 cp ./cassandra-env.sh /opt/bitnami/cassandra/conf/ >> /tmp/init/init.log 2>&1
 echo "==== Copy jvm.options ====" >> /tmp/init/init.log 2>&1

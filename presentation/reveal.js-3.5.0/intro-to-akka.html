@@ -1,0 +1,334 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+        <style>
+            .reveal .slides > section {
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+            }
+        </style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-background-iframe="title-background.html" data-markdown>
+                    <textarea data-template>
+                        ## Actors and Distributed Computing
+                        (And how to build this ↓ &ensp;&ensp;&ensp; not this ↓)&ensp;&ensp;&ensp;
+
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+                        <img src="images/intro-to-akka/tidy-cables.jpg" class="plain" style="width:35%; height: auto"/>
+                        <img src="images/intro-to-akka/messy-cables.jpg" class="plain" style="width:35%; height: auto"/>
+                    </textarea>
+				</section>
+
+				<section data-background-iframe="slide-background.html">
+                    <h1>Demo</h1>
+                </section>
+
+                <section data-background-iframe="slide-background.html" data-markdown>
+                    <textarea data-template>
+                        ## Architecture Overview
+                        ![](images/intro-to-akka/courier-realtime-architecture.png) <!-- .element: class="plain" -->
+                    </textarea>
+                </section>
+
+                <section data-background-iframe="slide-background.html" style="padding: 0 0 10% 0">
+                    <div data-markdown>
+                        <textarea data-template>
+                            #### Examples of Today's Problems
+                            * Monitor courier status (auto offline)
+                            * Monitor job status (has it been delivered yet?)
+                            * Smart recommendations based on geological information (courier, routing, etc)
+                            * Dynamic job management (grouping multiple jobs together)
+                            * Capacity management (identifying hotspots and send more couriers)
+                            * Dynamic pricing (pricing based on demand in each region)
+                        </textarea>
+                    </div>
+                    <br/>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            #### The Missing Piece
+                            * Microservices are flexible, but coordination is expensive
+                            * ML has states, but is not flexible and can be slow
+                            * How to merry microservices' scalability + flexibility with ML's intelligence?
+                        </textarea>
+                    </div>
+                </section>
+                <!--<section data-background-iframe="slide-background.html" data-markdown>-->
+                    <!--<textarea data-template>-->
+                        <!--## Challenges of Smart Systems-->
+                        <!--* &lt;!&ndash; .element: class="fragment" &ndash;&gt; Processing large volumes of data fast-->
+                        <!--* &lt;!&ndash; .element: class="fragment" &ndash;&gt; Making decisions quickly-->
+                        <!--* &lt;!&ndash; .element: class="fragment" &ndash;&gt; Data consistency and no corruption-->
+                        <!--* &lt;!&ndash; .element: class="fragment" &ndash;&gt; High availability and resistance to failures-->
+                        <!--* &lt;!&ndash; .element: class="fragment" &ndash;&gt; Maintainable and upgradable (downtime minimised)-->
+                    <!--</textarea>-->
+                <!--</section>-->
+				<section data-background-iframe="slide-background.html" data-markdown>
+                    <textarea data-template>
+                        ## Introducing Actor System
+                        ![](images/intro-to-akka/minions.jpg) <!-- .element: class="plain" style="height: auto; width: 50%" -->
+
+                        (They're like minions, but less evil)
+                    </textarea>
+                </section>
+
+				<section data-background-iframe="slide-background.html" style="width: 880px; padding: 0 0 10% 0">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Actor System in a Nutshell
+                        </textarea>
+                    </div>
+                    <div class="fragment" style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/actors-illustration.png) <!-- .element: class="plain" style="width: 90%; height: auto" -->
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            * <!-- .element: class="fragment" --> An **actor** ≈ a Go routine
+                            * <!-- .element: class="fragment" --> Actor has one input channel with buffering (called a **mailbox**)
+                            * <!-- .element: class="fragment" --> Actor communicates by passing **messages**
+                            * <!-- .element: class="fragment" --> Actor processes messages sequentially
+                        </textarea>
+                    </div>
+                    <div class="fragment" style="display:inline-block;" data-markdown>
+                        <textarea  data-template>
+                            ### End Result
+
+                            * Thread safety (no shared states)
+                            * Lock free (performance, yay!)
+                            * Actors are cheap, can have millions per node
+                        </textarea>
+                    </div>
+                </section>
+
+				<section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Actors vs Threads
+                        </textarea>
+                    </div>
+                    <div class="fragment" style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-actors-vs-threads.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                    <div class="fragment" style="margin-top: 5%; width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            * Actors are multiplexed to a small number of threads
+                            * Scheduling is taken care by actor system
+                            * Users only need to consider business logic
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html" data-markdown>
+                    <textarea data-template>
+                        ### Introducing
+                        ![](images/intro-to-akka/akka-logo.png) <!-- .element: class="plain" style="height: 100px" -->
+                    </textarea>
+                </section>
+
+                <section data-background-iframe="slide-background.html" style="width: 960px">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Who's Using Akka?
+                            ![](images/intro-to-akka/courier-realtime-akka-users.png) <!-- .element: class="plain" -->
+
+                            Case studies: https://www.lightbend.com/case-studies
+                        </textarea>
+                    </div>
+
+                    <aside class="notes">
+                        This is a battle tested tool, not a uni student's summer project.
+                    </aside>
+                </section>
+
+                <section data-background-iframe="slide-background.html" data-markdown>
+                    <textarea data-template>
+                        ### Akka Tech Stack
+                        ![](images/intro-to-akka/courier-realtime-akka-tech-stack.png) <!-- .element: class="plain" -->
+                    </textarea>
+
+                    <aside class="notes">
+                        There's a Scala native project, which might allow Akka to be compiled to native code directly.
+                    </aside>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Courier Realtime Service Architecture
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-actors.png) <!-- .element: class="plain" -->
+                        </textarea>
+                    </div>
+                    <div class="fragment" style="margin-top: 5%; width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            * Couriers, places and grid cells are each an actor
+                            * Actors interact by passing messages
+                            * a: courier moves
+                            * b: courier goes offline
+                            * c: recommendation request
+                        </textarea>
+                    </div>
+
+                    <aside class="notes">
+                        There's a Scala native project, which might allow Akka to be compiled to native code directly.
+
+                        Look at each case.
+                    </aside>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### a: courier moves
+                            ![](images/intro-to-akka/courier-realtime-actors-sub1.png) <!-- .element: class="plain" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### b: courier goes offline
+                            ![](images/intro-to-akka/courier-realtime-actors-sub2.png) <!-- .element: class="plain" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### c: recommendation based on distance
+                            ![](images/intro-to-akka/courier-realtime-actors-sub3.png) <!-- .element: class="plain" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Grid Topology
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-actors-sub4.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-actors-sub5.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                    <div style="display:inline-block;" data-markdown>
+                        <textarea data-template>
+                            * The grid can use any shape of tiles
+                            * Neighbourhood topology is easily computed
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ## Ok, so how does it perform under load?
+
+                            ![](images/intro-to-akka/load.jpg) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Load Test Setup
+
+                            * <!-- .element: class="fragment" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Wanna try it yourself?
+
+                            ![](images/intro-to-akka/try-again.jpg) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Project
+
+                            https://github.com/lastmilelink/actor-examples
+
+                            Please feel free to fork
+                        </textarea>
+                    </div>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            ### Project
+
+                            https://github.com/lastmilelink/actor-examples
+
+                            Please feel free to fork
+                        </textarea>
+                    </div>
+                </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/reveal-svg/reveal-svg-fragment.js', condition: function() { return !!document.querySelector( '[data-svg-fragment]' ); } }
+				],
+				transition: "none",
+                backgroundTransition: "none",
+                width: "90%",
+                fragments: false
+			});
+		</script>
+	</body>
+</html>

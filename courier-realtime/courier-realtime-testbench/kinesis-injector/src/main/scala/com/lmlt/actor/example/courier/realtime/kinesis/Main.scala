@@ -5,17 +5,17 @@ import java.util.concurrent.ThreadLocalRandom
 
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Cancellable, Props}
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.headers.`Access-Control-Allow-Origin`
 import akka.http.scaladsl.model.ws.TextMessage
-import akka.http.scaladsl.server.Directives.{handleWebSocketMessages, path, parameter, concat, get, post, complete}
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.Directives.{complete, concat, get, parameter, path, post}
 import akka.http.scaladsl.server.PathMatcher._
-import akka.http.scaladsl.model.headers.{`Access-Control-Allow-Origin`}
+import akka.http.scaladsl.server.Route
 import akka.pattern.ask
-import akka.stream.scaladsl.{Flow, Sink, Source}
-import akka.stream.{ActorMaterializer, OverflowStrategy}
+import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.amazonaws.services.kinesis.model.{PutRecordsRequest, PutRecordsRequestEntry}
 import com.amazonaws.services.kinesis.{AmazonKinesis, AmazonKinesisClient}
+import com.codahale.metrics.{JmxReporter, MetricRegistry}
 import com.lmlt.actor.example.courier.realtime.service.message.KinesisMessage.KinesisMessagePayload
 import com.lmlt.actor.example.courier.realtime.service.message.{Coordinates, KinesisMessage, LocationPing}
 import com.typesafe.config.ConfigFactory
@@ -32,6 +32,7 @@ import scala.util.{Failure, Random, Success}
   */
 object Main {
   val logger = LoggerFactory.getLogger(this.getClass)
+  val metrics = new MetricRegistry
   var count = 0
 
   def main(args: Array[String]): Unit = {
@@ -87,12 +88,15 @@ object Main {
       }
     )
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", system.settings.config.getInt("application.websocket.port"))
+    val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", system.settings.config.getInt("application.websocket.port"))
 
     bindingFuture.onFailure {
       case ex: Exception =>
         println("Failed to bind to localhost!")
     }
+
+    val reporter = JmxReporter.forRegistry(metrics).build
+    reporter.start
   }
 
   def randomMessage(): String = {
@@ -238,11 +242,16 @@ sealed trait KinesisInjectorMessage
 case object KinesisInjectorLoopMessage extends KinesisInjectorMessage
 
 object KinesisInjectorActor {
+  val messageMeter = Main.metrics.meter("injector.message")
+  val putRecordsMeter = Main.metrics.meter("injector.putRecords")
+  val putRecordsSizeHistogram = Main.metrics.histogram("injector.putRecords.size")
+
   def props(client: AmazonKinesis, streamName: String, batchSize: Int, timeoutMs: Long): Props = Props(new KinesisInjectorActor(client, streamName, batchSize, timeoutMs))
 }
 
 class KinesisInjectorActor(client: AmazonKinesis, streamName: String, batchSize: Int, timeoutMs: Long) extends Actor with ActorLogging {
 
+  import KinesisInjectorActor._
   import context._
 
   val batch: mutable.ArrayBuffer[CourierLocationMessage] = mutable.ArrayBuffer()
@@ -254,6 +263,7 @@ class KinesisInjectorActor(client: AmazonKinesis, streamName: String, batchSize:
 
   override def receive: Receive = {
     case x: CourierLocationMessage =>
+      messageMeter.mark()
       batch += x
       if (batch.nonEmpty && batch.size % batchSize == 0) {
         cancelHandle.cancel()
@@ -283,6 +293,8 @@ class KinesisInjectorActor(client: AmazonKinesis, streamName: String, batchSize:
     val putRecordsRequest = new PutRecordsRequest()
       .withStreamName(streamName)
       .withRecords(records.asJavaCollection)
+    putRecordsMeter.mark()
+    putRecordsSizeHistogram.update(batch.size)
     val result = client.putRecords(putRecordsRequest)
     Main.logger.info("Put record result: failed count = {}, records = {}",
       Array(

@@ -1,5 +1,5 @@
 <configuration>
-    <property name="logback.output.dir" value="/var/courier-realtime/logs"/>
+    <property name="logback.output.dir" value="${logback.output.dir}"/>
     <appender name="FILE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logback.output.dir}/application.log</file>
@@ -9,14 +9,11 @@
             </Pattern>
         </encoder>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily -->
-            <fileNamePattern>${logback.output.dir}/archived/application.%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logback.output.dir}/archived/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -28,15 +25,11 @@
                 %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
             </Pattern>
         </encoder>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily -->
-            <fileNamePattern>${logback.output.dir}/archived/error.%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logback.output.dir}/archived/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -49,7 +42,6 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </root>
 </configuration>

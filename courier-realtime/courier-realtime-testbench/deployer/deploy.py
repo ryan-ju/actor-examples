@@ -1,10 +1,9 @@
 import click
-from troposphere import Ref, Template, Tags, Join, Output, Export, Name, Sub, Base64, ImportValue, Parameter
+from troposphere import Ref, Template, Tags, Join, Output, Export, Sub, Base64, ImportValue, Parameter
 from troposphere.ec2 import VPC, Subnet, NetworkAcl, NetworkAclEntry, InternetGateway, PortRange, \
     VPCGatewayAttachment, RouteTable, Route, SecurityGroup, SecurityGroupRule, SubnetRouteTableAssociation, SubnetNetworkAclAssociation, NetworkInterfaceProperty, Instance
-from troposphere.autoscaling import Metadata, LaunchConfiguration, AutoScalingGroup
-from troposphere.cloudformation import Init, InitConfig
-from troposphere.elasticloadbalancing import LoadBalancer, Listener, HealthCheck, Policy
+from troposphere.autoscaling import LaunchConfiguration, AutoScalingGroup
+from troposphere.elasticloadbalancing import LoadBalancer, Listener, HealthCheck
 from troposphere.kinesis import Stream
 import boto3
 import re
@@ -320,6 +319,46 @@ def create_acl(vpc, cassandra_subnet, service_subnet, injector_subnet, load_test
         PortRange=PortRange(From='7199', To='7199'),
         Egress=False,
         RuleAction='allow'
+    )),
+    resources.append(NetworkAclEntry(
+        'ServiceHttpInboundAcl',
+        NetworkAclId=Ref(service_acl),
+        RuleNumber='500',
+        CidrBlock=home_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='80', To='80'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'ServiceHttpInboundAcl2',
+        NetworkAclId=Ref(service_acl),
+        RuleNumber='501',
+        CidrBlock=office_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='80', To='80'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'ServiceHttpInboundAcl3',
+        NetworkAclId=Ref(service_acl),
+        RuleNumber='502',
+        CidrBlock=home_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='8080', To='8080'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'ServiceHttpInboundAcl4',
+        NetworkAclId=Ref(service_acl),
+        RuleNumber='503',
+        CidrBlock=office_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='8080', To='8080'),
+        Egress=False,
+        RuleAction='allow'
     ))
     # Outbound
     resources.append(NetworkAclEntry(
@@ -383,6 +422,46 @@ def create_acl(vpc, cassandra_subnet, service_subnet, injector_subnet, load_test
         CidrBlock=office_ip + '/32',
         Protocol='6',
         PortRange=PortRange(From='7199', To='7199'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'InjectorHttpInboundAcl',
+        NetworkAclId=Ref(injector_acl),
+        RuleNumber='500',
+        CidrBlock=home_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='80', To='80'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'InjectorHttpInboundAcl2',
+        NetworkAclId=Ref(injector_acl),
+        RuleNumber='501',
+        CidrBlock=office_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='80', To='80'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'InjectorHttpInboundAcl3',
+        NetworkAclId=Ref(injector_acl),
+        RuleNumber='502',
+        CidrBlock=home_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='8080', To='8080'),
+        Egress=False,
+        RuleAction='allow'
+    ))
+    resources.append(NetworkAclEntry(
+        'InjectorHttpInboundAcl4',
+        NetworkAclId=Ref(injector_acl),
+        RuleNumber='503',
+        CidrBlock=office_ip + '/32',
+        Protocol='6',
+        PortRange=PortRange(From='8080', To='8080'),
         Egress=False,
         RuleAction='allow'
     ))
@@ -561,7 +640,6 @@ def create_cassandra_user_data(seed_id, aws_access_key_param, aws_secret_key_par
 
 
 def create_service_user_data(
-        seed_id,
         aws_access_key_param,
         aws_secret_key_param,
         datadog_api_key_param,
@@ -572,57 +650,71 @@ def create_service_user_data(
         grid_size,
         shard_nr,
         snapshot_after,
-        offline_after_s):
-    if seed_id:
-        data = [
-            '#!/bin/bash\n',
-            'export AWS_ACCESS_KEY_ID=', Ref(aws_access_key_param), '\n',
-            'export AWS_SECRET_ACCESS_KEY=', Ref(aws_secret_key_param), '\n',
-            'export DATADOG_API_KEY=', Ref(datadog_api_key_param), '\n',
-            'export SEED_NODES=', Ref(seed_nodes_param), '\n',
-            'export CASSANDRA_SEEDS=', cassandra_seeds, '\n',
-            'export BUCKET=', bucket, '\n',
-            'export KINESIS=', kinesis_stream, '\n',
-            'export GRID_SIZE=', grid_size, '\n',
-            'export SHARD_NR=', shard_nr, '\n',
-            'export SNAPSHOT_AFTER=', snapshot_after, '\n',
-            'export OFFLINE_AFTER_S=', offline_after_s, '\n',
-            # Install init scripts
-            'mkdir -p /tmp/init\n',
-            'cd /tmp/init\n'
-            'aws s3 cp s3://', bucket, '/service-config.tar.gz ./\n',
-            'tar -zxf service-config.tar.gz\n',
-            'cd /tmp/init/service-config\n',
-            'chmod +x ./init.sh\n'
-            './init.sh\n'
-            # Signal stack boot finished
-            'cfn-signal -e $? ',
-            '--stack ', Ref('AWS::StackName'),
-            '--resource ', seed_id, '\n'
-        ]
-    else:
-        data = [
-            '#!/bin/bash\n',
-            'export AWS_ACCESS_KEY_ID=', Ref(aws_access_key_param), '\n',
-            'export AWS_SECRET_ACCESS_KEY=', Ref(aws_secret_key_param), '\n',
-            'export DATADOG_API_KEY=', Ref(datadog_api_key_param), '\n',
-            'export SEED_NODES=', Ref(seed_nodes_param), '\n',
-            'export CASSANDRA_SEEDS=', cassandra_seeds, '\n',
-            'export BUCKET=', bucket, '\n',
-            'export KINESIS=', kinesis_stream, '\n',
-            'export GRID_SIZE=', grid_size, '\n',
-            'export SHARD_NR=', shard_nr, '\n',
-            'export SNAPSHOT_AFTER=', snapshot_after, '\n',
-            'export OFFLINE_AFTER_S=', offline_after_s, '\n',
-            # Install init scripts
-            'mkdir -p /tmp/init\n',
-            'cd /tmp/init\n'
-            'aws s3 cp s3://', bucket, '/service-config.tar.gz ./\n',
-            'tar -zxf service-config.tar.gz\n',
-            'cd /tmp/init/service-config\n',
-            'chmod +x ./init.sh\n'
-            './init.sh\n'
-        ]
+        offline_after_s,
+        ws):
+    data = [
+        '#!/bin/bash\n',
+        'export AWS_ACCESS_KEY_ID=', Ref(aws_access_key_param), '\n',
+        'export AWS_SECRET_ACCESS_KEY=', Ref(aws_secret_key_param), '\n',
+        'export DATADOG_API_KEY=', Ref(datadog_api_key_param), '\n',
+        'export SEED_NODES=', Ref(seed_nodes_param), '\n',
+        'export CASSANDRA_SEEDS=', cassandra_seeds, '\n',
+        'export BUCKET=', bucket, '\n',
+        'export KINESIS=', kinesis_stream, '\n',
+        'export GRID_SIZE=', grid_size, '\n',
+        'export SHARD_NR=', shard_nr, '\n',
+        'export SNAPSHOT_AFTER=', snapshot_after, '\n',
+        'export OFFLINE_AFTER_S=', offline_after_s, '\n',
+        'export WS=', str(ws).lower(), '\n',
+        # Install init scripts
+        'mkdir -p /tmp/init\n',
+        'cd /tmp/init\n'
+        'aws s3 cp s3://', bucket, '/service-config.tar.gz ./\n',
+        'tar -zxf service-config.tar.gz\n',
+        'cd /tmp/init/service-config\n',
+        'chmod +x ./init.sh\n'
+        './init.sh\n'
+    ]
+    return Base64(Join('', data))
+
+
+def create_injector_userdata(
+        instance,
+        aws_access_key_param,
+        aws_secret_key_param,
+        kinesis_stream,
+        bucket,
+        grid_size,
+        batch_size,
+        batch_timeout_ms,
+        courier_nr,
+        courier_ping_ms,
+        courier_step_size):
+    data = [
+        '#!/bin/bash\n',
+        'export AWS_ACCESS_KEY_ID=', Ref(aws_access_key_param), '\n',
+        'export AWS_SECRET_ACCESS_KEY=', Ref(aws_secret_key_param), '\n',
+        'export BUCKET=', bucket, '\n',
+        'export KINESIS=', kinesis_stream, '\n',
+        'export GRID_SIZE=', grid_size, '\n',
+        'export BATCH_SIZE=', batch_size, '\n',
+        'export BATCH_TIMEOUT_MS=', batch_timeout_ms, '\n',
+        'export COURIER_NR=', courier_nr, '\n',
+        'export COURIER_PING_MS=', courier_ping_ms, '\n',
+        'export COURIER_STEP_SIZE=', courier_step_size, '\n',
+        # Install init scripts
+        'mkdir -p /tmp/init\n',
+        'cd /tmp/init\n'
+        'aws s3 cp s3://', bucket, '/injector-config.tar.gz ./\n',
+        'tar -zxf injector-config.tar.gz\n',
+        'cd /tmp/init/injector-config\n',
+        'chmod +x ./init.sh\n'
+        './init.sh\n'
+        # Signal stack boot finished
+        'cfn-signal -e $? ',
+        '--stack ', Ref('AWS::StackName'),
+        '--resource ', instance, '\n'
+    ]
     return Base64(Join('', data))
 
 
@@ -776,7 +868,8 @@ def create_service_cluster(
         grid_size,
         shard_nr,
         snapshot_after,
-        offline_after_ms):
+        offline_after_ms,
+        ws):
     parameters = []
     resources = []
     aws_access_key_param = Parameter(
@@ -833,6 +926,18 @@ def create_service_cluster(
                 FromPort='7199',
                 ToPort='7199',
                 CidrIp=office_ip + '/32'
+            ),
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='8080',
+                ToPort='8080',
+                CidrIp=home_ip + '/32'
+            ),
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='8080',
+                ToPort='8080',
+                CidrIp=office_ip + '/32'
             )
         ],
         VpcId=vpc
@@ -857,7 +962,6 @@ def create_service_cluster(
                 )
             ],
             UserData=create_service_user_data(
-                seed_id=f'ServiceSeed{i}',
                 aws_access_key_param=aws_access_key_param,
                 aws_secret_key_param=aws_secret_key_param,
                 datadog_api_key_param=datadog_api_key_param,
@@ -868,7 +972,8 @@ def create_service_cluster(
                 grid_size=grid_size,
                 shard_nr=shard_nr,
                 snapshot_after=snapshot_after,
-                offline_after_s=offline_after_ms
+                offline_after_s=offline_after_ms,
+                ws=ws
             ),
             Tags=Tags(
                 Name=f'ServiceSeed{i}'
@@ -957,7 +1062,6 @@ def create_service_cluster(
         SecurityGroups=[Ref(service_sg)],
         KeyName=key_pair,
         UserData=create_service_user_data(
-            seed_id=None,
             aws_access_key_param=aws_access_key_param,
             aws_secret_key_param=aws_secret_key_param,
             datadog_api_key_param=datadog_api_key_param,
@@ -968,7 +1072,8 @@ def create_service_cluster(
             grid_size=grid_size,
             shard_nr=shard_nr,
             snapshot_after=snapshot_after,
-            offline_after_s=offline_after_ms
+            offline_after_s=offline_after_ms,
+            ws=ws
         )
     )
     resources.append(launch_config)
@@ -981,6 +1086,116 @@ def create_service_cluster(
         LoadBalancerNames=[Ref(load_balancer)]
     )
     resources.append(autoscaling)
+    return parameters, resources
+
+
+def create_injector(
+        vpc,
+        instance_type,
+        key_pair,
+        injector_subnet,
+        home_ip,
+        office_ip,
+        bucket,
+        kinesis_stream,
+        grid_size,
+        batch_size,
+        batch_timeout_ms,
+        courier_nr,
+        courier_ping_ms,
+        courier_step_size):
+    parameters = []
+    resources = []
+    aws_access_key_param = Parameter(
+        'AWSAccessKey',
+        Type='String',
+        NoEcho=True
+    )
+    parameters.append(aws_access_key_param)
+    aws_secret_key_param = Parameter(
+        'AWSSecretKey',
+        Type='String',
+        NoEcho=True
+    )
+    parameters.append(aws_secret_key_param)
+    # Service
+    injector_sg = SecurityGroup(
+        'InjectorSg',
+        GroupDescription='Injector security group',
+        SecurityGroupIngress=[
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='22',
+                ToPort='22',
+                CidrIp='0.0.0.0/0'
+            ),
+            # Allow all VPC internal communications
+            SecurityGroupRule(
+                IpProtocol='-1',
+                FromPort='-1',
+                ToPort='-1',
+                CidrIp='10.0.0.0/16'
+            ),
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='7199',
+                ToPort='7199',
+                CidrIp=home_ip + '/32'
+            ),
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='7199',
+                ToPort='7199',
+                CidrIp=office_ip + '/32'
+            ),
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='80',
+                ToPort='80',
+                CidrIp=home_ip + '/32'
+            ),
+            SecurityGroupRule(
+                IpProtocol='tcp',
+                FromPort='80',
+                ToPort='80',
+                CidrIp=office_ip + '/32'
+            )
+        ],
+        VpcId=vpc
+    )
+    resources.append(injector_sg)
+    instance = Instance(
+        'InjectorInstance',
+        ImageId=SERVICE_AMI,
+        InstanceType=instance_type,
+        KeyName=key_pair,
+        NetworkInterfaces=[
+            NetworkInterfaceProperty(
+                GroupSet=[Ref(injector_sg)],
+                AssociatePublicIpAddress='true',
+                DeviceIndex='0',
+                DeleteOnTermination='true',
+                SubnetId=injector_subnet
+            )
+        ],
+        UserData=create_injector_userdata(
+            instance='InjectorInstance',
+            aws_access_key_param=aws_access_key_param,
+            aws_secret_key_param=aws_secret_key_param,
+            kinesis_stream=kinesis_stream,
+            bucket=bucket,
+            grid_size=grid_size,
+            batch_size=batch_size,
+            batch_timeout_ms=batch_timeout_ms,
+            courier_nr=courier_nr,
+            courier_ping_ms=courier_ping_ms,
+            courier_step_size=courier_step_size
+        ),
+        Tags=Tags(
+            Name='InjectorInstance'
+        )
+    )
+    resources.append(instance)
     return parameters, resources
 
 
@@ -1202,8 +1417,9 @@ def kinesis(ctx, operation, name, shards, dryrun):
 @click.option('--shard-nr', 'shard_nr', default=100, help='Number of Akka cluster shards for each shard region')
 @click.option('--snapshot-after', 'snapshot_after', default=1000, help='Number of events before Akka persists a snapshot for each persistent actor')
 @click.option('--offline-after', 'offline_after', default=300, help='Number of seconds before a courier is marked offline')
+@click.option('--ws', is_flag=True, help='Enable active messages over websocket.  Those messages include courier location pings.  This is network intensive, so do not use this in load test')
 @click.pass_context
-def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pair, aws_access_key, aws_secret_key, datadog_api_key, bucket, grid_size, shard_nr, snapshot_after, offline_after):
+def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pair, aws_access_key, aws_secret_key, datadog_api_key, bucket, grid_size, shard_nr, snapshot_after, offline_after, ws):
     if operation == 'deploy':
         if not home_ip:
             raise click.BadParameter('Must specify home IP')
@@ -1231,7 +1447,8 @@ def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pa
             grid_size=grid_size,
             shard_nr=shard_nr,
             snapshot_after=snapshot_after,
-            offline_after_ms=offline_after
+            offline_after_ms=offline_after,
+            ws=ws
         )
 
         t = Template()
@@ -1274,6 +1491,95 @@ def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pa
         client = ctx.obj['client']
         response = client.describe_stacks(
             StackName=SERVICE_STACK
+        )
+        print(response)
+    else:
+        raise click.BadParameter('Must specify action')
+
+
+@main.command()
+@click.option('--deploy', 'operation', flag_value='deploy')
+@click.option('--undeploy', 'operation', flag_value='undeploy')
+@click.option('--status', 'operation', flag_value='status')
+@click.option('--dry-run', '-d', 'dryrun', is_flag=True)
+@click.option('--home-ip', 'home_ip', help='Trusted IP address')
+@click.option('--office-ip', 'office_ip', help='Trusted office IP address')
+@click.option('--instance', default=SERVICE_INSTANCE, help='EC2 instance type')
+@click.option('--key-pair', 'key_pair', default=KEY_PAIR, help='EC2 SSH key pair')
+@click.option('--aws-access-key', 'aws_access_key', envvar='AWS_ACCESS_KEY_ID', help='Defaults to AWS_ACCESS_KEY_ID')
+@click.option('--aws-secret-key', 'aws_secret_key', envvar='AWS_SECRET_ACCESS_KEY', help='Defaults to AWS_SECRET_ACCESS_KEY')
+@click.option('--bucket', default='courier-realtime', help='S3 bucket to download init tar')
+@click.option('--grid-size', 'grid_size', default=1000)
+@click.option('--batch-size', 'batch_size', default=1000)
+@click.option('--batch-timeout', 'batch_timeout', default=1000, help='The period of sending to Kinesis in milliseconds')
+@click.option('--courier-nr', 'courier_nr', default=500, help='Number of couriers')
+@click.option('--courier-ping', 'courier_ping', default=60000, help='The period of couriers sending pings in milliseconds')
+@click.option('--courier-step', 'courier_step', default=0.8, help='The step size of courier movement in each period.  Courier can move with step size in x direction (left or righ) and step size in y direction (up or down).')
+@click.pass_context
+def injector(ctx, operation, dryrun, home_ip, office_ip, instance, key_pair, aws_access_key, aws_secret_key, bucket, grid_size, batch_size, batch_timeout, courier_nr, courier_ping, courier_step):
+    if operation == 'deploy':
+        if not home_ip:
+            raise click.BadParameter('Must specify home IP')
+        if not office_ip:
+            raise click.BadParameter('Must specify office IP')
+
+        vpc = ImportValue(f'{VPC_STACK}-VPC')
+        injector_subnet = ImportValue(f'{VPC_STACK}-INJ-SUBNET')
+        kinesis_stream = ImportValue(f'{KINESIS_STACK}-STREAM-NAME')
+
+        parameters, resources = create_injector(
+            vpc=vpc,
+            instance_type=instance,
+            key_pair=key_pair,
+            injector_subnet=injector_subnet,
+            home_ip=home_ip,
+            office_ip=office_ip,
+            bucket=bucket,
+            kinesis_stream=kinesis_stream,
+            grid_size=grid_size,
+            batch_size=batch_size,
+            batch_timeout_ms=batch_timeout,
+            courier_nr=courier_nr,
+            courier_ping_ms=courier_ping,
+            courier_step_size=courier_step
+        )
+
+        t = Template()
+        t.add_parameter(parameters)
+        t.add_resource(resources)
+
+        if dryrun:
+            print(t.to_json())
+        else:
+            client = ctx.obj['client']
+            response = client.create_stack(
+                StackName=INJECTOR_STACK,
+                TemplateBody=t.to_json(),
+                Parameters=[
+                    {
+                        'ParameterKey': 'AWSAccessKey',
+                        'ParameterValue': aws_access_key
+                    },
+                    {
+                        'ParameterKey': 'AWSSecretKey',
+                        'ParameterValue': aws_secret_key
+                    }
+                ]
+            )
+            print(response)
+    elif operation == 'undeploy':
+        if dryrun:
+            print(f'Will delete stack "{INJECTOR_STACK}"')
+        else:
+            client = ctx.obj['client']
+            client.delete_stack(
+                StackName=INJECTOR_STACK
+            )
+            print(f'Deleting "{INJECTOR_STACK}"')
+    elif operation == 'status':
+        client = ctx.obj['client']
+        response = client.describe_stacks(
+            StackName=INJECTOR_STACK
         )
         print(response)
     else:

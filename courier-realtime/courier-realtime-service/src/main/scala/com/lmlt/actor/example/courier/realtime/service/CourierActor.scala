@@ -19,6 +19,7 @@ object CourierActor {
   val shardNr = conf.getInt("application.courier-cluster.shardNr")
   val snapshotAfterMessageNr = conf.getInt("application.courier-cluster.snapshotAfterMessageNr")
   val offlineAfterS = conf.getLong("application.courier.offlineAfterS")
+  val shouldPublish = conf.getBoolean("application.courier.publish")
 
   def props(gridMaster: GridMaster): Props = Props(new CourierActor(gridMaster))
 
@@ -50,6 +51,12 @@ class CourierActor(gridMaster: GridMaster) extends PersistentActor with ActorLog
 
   var state: CourierActorState = CourierActorState(courierStatus = CourierStatus.OFFLINE, lastMessageTimestamp = Long.MinValue)
   var count: Long = 0
+
+  def publish(msg: Any): Unit = {
+    if (shouldPublish) {
+      mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+    }
+  }
 
   override def persistenceId: String = courierId
 
@@ -88,7 +95,7 @@ class CourierActor(gridMaster: GridMaster) extends PersistentActor with ActorLog
                 courierStatus = event.courierStatus,
                 prevCoordinates = state.coordinates
               )
-              mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+              publish(msg)
               gridMaster.updateCourierStatus(msg)
             }
           }
@@ -100,7 +107,7 @@ class CourierActor(gridMaster: GridMaster) extends PersistentActor with ActorLog
               coordinates = event.coordinates,
               prevCoordinates = prevCoordinates
             )
-            mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+            publish(msg)
             gridMaster.updateCourierLocation(msg)
           }
         } else {
@@ -120,7 +127,7 @@ class CourierActor(gridMaster: GridMaster) extends PersistentActor with ActorLog
             courierStatus = event.courierStatus,
             prevCoordinates = state.coordinates
           )
-          mediator ! Publish(WSMessageActor.courierMessageTopic, msg)
+          publish(msg)
           gridMaster.updateCourierStatus(msg)
         }
       }
