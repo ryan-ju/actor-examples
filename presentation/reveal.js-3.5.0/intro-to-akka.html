@@ -166,6 +166,22 @@
                     </aside>
                 </section>
 
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### What Akka Adds on Top of Actors?
+
+                            * <!-- .element: class="fragment" --> Actor hierarchy and failure handling
+                            * <!-- .element: class="fragment" --> Remoting, clustering and sharding
+                            * <!-- .element: class="fragment" --> Persistence
+                            * <!-- .element: class="fragment" --> Serialization
+                            * <!-- .element: class="fragment" --> Distributed data
+                            * <!-- .element: class="fragment" --> Pub/sub
+                            * <!-- .element: class="fragment" --> Back-pressured streams
+                        </textarea>
+                    </div>
+                </section>
+
                 <section data-background-iframe="slide-background.html" data-markdown>
                     <textarea data-template>
                         ### Akka Tech Stack
@@ -259,6 +275,45 @@
                 <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
+                            ### Going Distributed
+                        </textarea>
+                    </div>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-1.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Going Distributed Ctnd.
+                        </textarea>
+                    </div>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-2.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Going Distributed Ctnd.
+                        </textarea>
+                    </div>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-3.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
                             ## Ok, so how does it perform under load?
 
                             ![](images/intro-to-akka/load.jpg) <!-- .element: class="plain" style="height: 400px" -->
@@ -270,8 +325,142 @@
                     <div data-markdown>
                         <textarea data-template>
                             ### Load Test Setup
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            #### Test Data
 
-                            * <!-- .element: class="fragment" -->
+                            * <!-- .element: class="fragment" data-fragment-index="1" --> 1000 x 1000 grid
+                            * <!-- .element: class="fragment" data-fragment-index="3" --> 10000 places
+                            * <!-- .element: class="fragment" data-fragment-index="4" --> Courier sending one ping per minute
+                            * <!-- .element: class="fragment" data-fragment-index="5" --> Tested with 2000, 20000 couriers
+
+                            #### <!-- .element: class="fragment" data-fragment-index="6" --> Service
+
+                            * <!-- .element: class="fragment" data-fragment-index="6" --> 2 x c4.large (2 vCPU, 3.75 GB RAM)
+                            * <!-- .element: class="fragment" data-fragment-index="6" --> 2GB heap, CMS GC
+
+                            #### <!-- .element: class="fragment" data-fragment-index="6" --> Cassandra
+
+                            * <!-- .element: class="fragment" data-fragment-index="6" --> 2 x c4.large (2 vCPU, 3.75 GB RAM)
+                            * <!-- .element: class="fragment" data-fragment-index="6" --> 3 nodes for 20000 courier test
+                            * <!-- .element: class="fragment" data-fragment-index="6" --> 3GB heap, CMS GC
+                        </textarea>
+                    </div>
+                    <div class="fragment" data-fragment-index="2" style="width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/uk-grid.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html" style="width: 1400px">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Load Test Result: 2000 Couriers
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/load/2000courier-courier-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
+                            ![](images/intro-to-akka/load/2000courier-system-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/load/2000courier-grid-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
+                            ![](images/intro-to-akka/load/2000courier-network-metrics.png) <!-- .element: class="plain" style="height: 125px; margin: 0" -->
+                        </textarea>
+                    </div>
+                    <div style="display:inline-block;" data-markdown>
+                        <textarea data-template>
+                            Service GC logs: http://gceasy.io/diamondgc-report.jsp?oTxnId_value=ee8d758f-eb0c-4c65-88a4-206f71613575# <!-- .element: style="font-size: medium" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html" style="width: 1400px">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Load Test Result: 20000 Couriers
+
+                            TBC
+                        </textarea>
+                    </div>
+                    <!--<div style="width: 50%; float: left" data-markdown>-->
+                        <!--<textarea data-template>-->
+                            <!--![](images/intro-to-akka/load/2000courier-courier-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 250px; margin: 0" &ndash;&gt;-->
+                            <!--![](images/intro-to-akka/load/2000courier-system-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 250px; margin: 0" &ndash;&gt;-->
+                        <!--</textarea>-->
+                    <!--</div>-->
+                    <!--<div style="width: 50%; float: right" data-markdown>-->
+                        <!--<textarea data-template>-->
+                            <!--![](images/intro-to-akka/load/2000courier-grid-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 250px; margin: 0" &ndash;&gt;-->
+                            <!--![](images/intro-to-akka/load/2000courier-network-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 125px; margin: 0" &ndash;&gt;-->
+                        <!--</textarea>-->
+                    <!--</div>-->
+                    <!--<div style="display:inline-block;" data-markdown>-->
+                        <!--<textarea data-template>-->
+                            <!--Service GC logs: http://gceasy.io/diamondgc-report.jsp?oTxnId_value=ee8d758f-eb0c-4c65-88a4-206f71613575# &lt;!&ndash; .element: style="font-size: medium" &ndash;&gt;-->
+                        <!--</textarea>-->
+                    <!--</div>-->
+                </section>
+
+                <section data-background-iframe="slide-background.html" style="width: 1400px">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Load Test Result: 20000 Couriers
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: left" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/load/2000courier-courier-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
+                            ![](images/intro-to-akka/load/2000courier-system-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
+                        </textarea>
+                    </div>
+                    <div style="width: 50%; float: right" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/load/2000courier-grid-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
+                            ![](images/intro-to-akka/load/2000courier-network-metrics.png) <!-- .element: class="plain" style="height: 125px; margin: 0" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### What are the Potential Usages of Akka?
+
+                            * <!-- .element: class="fragment" --> Monitoring (courier, job lifecycle, etc)
+                            * <!-- .element: class="fragment" --> Recommendation
+                            * <!-- .element: class="fragment" --> Notification systems
+                            * <!-- .element: class="fragment" --> Search engines (multi-dimensional search and grouping)
+                            * <!-- .element: class="fragment" --> Capacity management
+                            * <!-- .element: class="fragment" --> Dynamic pricing
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Challenges
+
+                            Unfortunately, it's not all sunshine and roses
+
+                            * <!-- .element: class="fragment" --> Upgradability
+                                - <!-- .element: class="fragment" --> Rolling upgrade
+                                - <!-- .element: class="fragment" --> A-B switch over
+                                - <!-- .element: class="fragment" --> Down time deployment
+                                - <!-- .element: class="fragment" --> Rollback?
+                            * <!-- .element: class="fragment" --> Persistence
+                                - <!-- .element: class="fragment" --> Need to manage Cassandra (or any DB)
+                            * <!-- .element: class="fragment" --> Data versioning?
+                                - <!-- .element: class="fragment" --> Should use protobuf to ensure backward compatibility
+                                - <!-- .element: class="fragment" --> Breaking changes?  Might need data migration
+                            * <!-- .element: class="fragment" --> Coding
+                                - <!-- .element: class="fragment" --> Scala has some learning curve (though I find JavaScript more difficult)
                         </textarea>
                     </div>
                 </section>
@@ -293,16 +482,50 @@
 
                             https://github.com/lastmilelink/actor-examples
 
-                            Please feel free to fork
+                            PR and issues welcomed
                         </textarea>
                     </div>
-                    <div class="fragment" data-markdown>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
                         <textarea data-template>
-                            ### Project
+                            ### Alternative Actor Techs
 
-                            https://github.com/lastmilelink/actor-examples
+                            * [Orleans](http://dotnet.github.io/orleans/)(.Net only, sorry)
+                            * [Proto Actor](http://proto.actor/)(Go lang, still in beta)
+                            * [CAF](https://actor-framework.org/)(C++)
 
-                            Please feel free to fork
+                            ### Alternative Distributed Computing Techs
+
+                            * [Ignite](https://ignite.apache.org/)(Java, in memory data grid)
+                            * [Spark Streaming](https://spark.apache.org/streaming/)(Scala)
+                            * [Storm](http://storm.apache.org/)(Clojure)
+                            * [Glow](https://github.com/chrislusf/glow)(Go lang, map-reduce)
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            # Thank You
+
+                            Questions?
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            # References
+
+                            * http://doc.akka.io/docs/akka/current/scala
+                            * http://kamon.io/documentation/get-started/
+                            * https://github.com/cloudtools/troposphere
+                            * https://github.com/typesafehub/config
+                            * https://bitnami.com/stack/cassandra
                         </textarea>
                     </div>
                 </section>

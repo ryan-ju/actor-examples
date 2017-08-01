@@ -4,6 +4,7 @@ echo "SEED_NODES=$SEED_NODES" >> /tmp/init/init.log 2>&1
 echo "BUCKET=$BUCKET" >> /tmp/init/init.log 2>&1
 echo "KINESIS=$KINESIS" >> /tmp/init/init.log 2>&1
 echo "CASSANDRA_SEEDS=$CASSANDRA_SEEDS" >> /tmp/init/init.log 2>&1
+echo "CASSANDRA_REPLICATION_FACTOR=$CASSANDRA_REPLICATION_FACTOR" >> /tmp/init/init.log 2>&1
 echo "GRID_SIZE=$GRID_SIZE" >> /tmp/init/init.log 2>&1
 echo "SHARD_NR=$SHARD_NR" >> /tmp/init/init.log 2>&1
 echo "SNAPSHOT_AFTER=$SNAPSHOT_AFTER" >> /tmp/init/init.log 2>&1
@@ -83,6 +84,8 @@ JAVA_OPTS="$JAVA_OPTS -Dapplication.grid-cluster.snapshotAfterMessageNr=$SNAPSHO
 JAVA_OPTS="$JAVA_OPTS -Dapplication.courier.offlineAfterS=$OFFLINE_AFTER_S"
 JAVA_OPTS="$JAVA_OPTS -Dapplication.courier.publish=$WS"
 JAVA_OPTS="$JAVA_OPTS -Dapplication.websocket.port=8080"
+JAVA_OPTS="$JAVA_OPTS -Dcassandra-journal.replication-factor=$CASSANDRA_REPLICATION_FACTOR"
+JAVA_OPTS="$JAVA_OPTS -Dcassandra-snapshot-store.replication-factor=$CASSANDRA_REPLICATION_FACTOR"
 JAVA_OPTS="$JAVA_OPTS -Dlogback.output.dir=/var/courier-realtime/logs"
 # Run application in background
 echo "==== JAVA_OPTS=$JAVA_OPTS ====" >> /tmp/init/init.log 2>&1

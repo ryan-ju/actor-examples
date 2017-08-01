@@ -61,5 +61,5 @@ JAVA_OPTS="$JAVA_OPTS -Dlogback.output.dir=/var/kinesis-injector/logs"
 # Run application in background
 echo "==== JAVA_OPTS=$JAVA_OPTS ====" >> /tmp/init/init.log 2>&1
 echo "==== Application starting ... ====" >> /tmp/init/init.log 2>&1
-JAVA_OPTS="$JAVA_OPTS" nohup $ROOT/bin/courier-realtime-kinesis-injector &
+JAVA_OPTS="$JAVA_OPTS" nohup $ROOT/bin/courier-realtime-kinesis-injector > nohup.out 2>&1 &
 echo "==== Application started ====" >> /tmp/init/init.log 2>&1

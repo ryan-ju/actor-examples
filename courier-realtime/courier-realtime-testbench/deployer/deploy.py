@@ -645,6 +645,7 @@ def create_service_user_data(
         datadog_api_key_param,
         seed_nodes_param,
         cassandra_seeds,
+        cassandra_replication_factor,
         kinesis_stream,
         bucket,
         grid_size,
@@ -659,6 +660,7 @@ def create_service_user_data(
         'export DATADOG_API_KEY=', Ref(datadog_api_key_param), '\n',
         'export SEED_NODES=', Ref(seed_nodes_param), '\n',
         'export CASSANDRA_SEEDS=', cassandra_seeds, '\n',
+        'export CASSANDRA_REPLICATION_FACTOR=', cassandra_replication_factor, '\n',
         'export BUCKET=', bucket, '\n',
         'export KINESIS=', kinesis_stream, '\n',
         'export GRID_SIZE=', grid_size, '\n',
@@ -865,6 +867,7 @@ def create_service_cluster(
         bucket,
         kinesis_stream,
         cassandra_seeds,
+        cassandra_replication_factor,
         grid_size,
         shard_nr,
         snapshot_after,
@@ -967,6 +970,7 @@ def create_service_cluster(
                 datadog_api_key_param=datadog_api_key_param,
                 seed_nodes_param=seed_nodes_param,
                 cassandra_seeds=cassandra_seeds,
+                cassandra_replication_factor=cassandra_replication_factor,
                 kinesis_stream=kinesis_stream,
                 bucket=bucket,
                 grid_size=grid_size,
@@ -1067,6 +1071,7 @@ def create_service_cluster(
             datadog_api_key_param=datadog_api_key_param,
             seed_nodes_param=seed_nodes_param,
             cassandra_seeds=cassandra_seeds,
+            cassandra_replication_factor=cassandra_replication_factor,
             kinesis_stream=kinesis_stream,
             bucket=bucket,
             grid_size=grid_size,
@@ -1412,6 +1417,7 @@ def kinesis(ctx, operation, name, shards, dryrun):
 @click.option('--aws-access-key', 'aws_access_key', envvar='AWS_ACCESS_KEY_ID', help='Defaults to AWS_ACCESS_KEY_ID')
 @click.option('--aws-secret-key', 'aws_secret_key', envvar='AWS_SECRET_ACCESS_KEY', help='Defaults to AWS_SECRET_ACCESS_KEY')
 @click.option('--datadog-api-key', 'datadog_api_key', help='Datadog API key')
+@click.option('--cassandra-rf', 'cassandra_replication_factor', default=3, help='Cassandra replication factor.  Default 3')
 @click.option('--bucket', default='courier-realtime', help='S3 bucket to download init tar')
 @click.option('--grid-size', 'grid_size', default=1000)
 @click.option('--shard-nr', 'shard_nr', default=100, help='Number of Akka cluster shards for each shard region')
@@ -1419,7 +1425,7 @@ def kinesis(ctx, operation, name, shards, dryrun):
 @click.option('--offline-after', 'offline_after', default=300, help='Number of seconds before a courier is marked offline')
 @click.option('--ws', is_flag=True, help='Enable active messages over websocket.  Those messages include courier location pings.  This is network intensive, so do not use this in load test')
 @click.pass_context
-def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pair, aws_access_key, aws_secret_key, datadog_api_key, bucket, grid_size, shard_nr, snapshot_after, offline_after, ws):
+def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pair, aws_access_key, aws_secret_key, datadog_api_key, cassandra_replication_factor, bucket, grid_size, shard_nr, snapshot_after, offline_after, ws):
     if operation == 'deploy':
         if not home_ip:
             raise click.BadParameter('Must specify home IP')
@@ -1444,6 +1450,7 @@ def service(ctx, operation, number, dryrun, home_ip, office_ip, instance, key_pa
             bucket=bucket,
             kinesis_stream=kinesis_stream,
             cassandra_seeds=cassandra_seeds,
+            cassandra_replication_factor=cassandra_replication_factor,
             grid_size=grid_size,
             shard_nr=shard_nr,
             snapshot_after=snapshot_after,
