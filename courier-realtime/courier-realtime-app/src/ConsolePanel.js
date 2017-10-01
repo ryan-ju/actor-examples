@@ -56,21 +56,21 @@ const merge = (stateProps, dispatchProps, ownProps) => {
     }
 }
 
-const ConnectCourierPanel = ({onCourierConnectClick, onCourierUrlChanged}) => {
+const ConnectCourierPanel = ({courierUrl, onCourierConnectClick, onCourierUrlChanged}) => {
     return (
         <div className="mui-panel">
             <Textfield label="host:port..." floatingLabel onChange={({target}) => onCourierUrlChanged(target.value)}
-                       value="ws://localhost:30001/service"/>
+                       value={courierUrl}/>
             <Button raised colored ripple onClick={onCourierConnectClick}>Connect</Button>
         </div>
     )
 }
 
-const ConnectInjectorPanel = ({onInjectorConnectClick, onInjectorUrlChanged}) => {
+const ConnectInjectorPanel = ({injectorUrl, onInjectorConnectClick, onInjectorUrlChanged}) => {
     return (
         <div className="mui-panel">
             <Textfield label="host:port..." floatingLabel onChange={({target}) => onInjectorUrlChanged(target.value)}
-                       value="ws://localhost:3001/injector"/>
+                       value={injectorUrl}/>
             <Button raised colored ripple onClick={onInjectorConnectClick}>Connect</Button>
         </div>
     )
@@ -108,17 +108,19 @@ class EventOutputPanel extends React.Component {
     }
 }
 
-const ConsolePanel = ({courierUrl, onInjectorConnectClick, onInjectorUrlChanged, onCourierConnectClick, onCourierUrlChanged, onRefresh}) => {
+const ConsolePanel = ({courierUrl, injectorUrl, onInjectorConnectClick, onInjectorUrlChanged, onCourierConnectClick, onCourierUrlChanged, onRefresh}) => {
     return (
         <div>
             <Grid style={{height: '10%'}}>
                 <Cell col={6}>
                     <Card shadow={1} style={{width: 'auto', padding: 10}}>
                         <ConnectCourierPanel onCourierConnectClick={onCourierConnectClick}
-                                             onCourierUrlChanged={onCourierUrlChanged}/>
+                                             onCourierUrlChanged={onCourierUrlChanged}
+                                             courierUrl={courierUrl}/>
                         <br/>
                         <ConnectInjectorPanel onInjectorConnectClick={onInjectorConnectClick}
-                                              onInjectorUrlChanged={onInjectorUrlChanged}/>
+                                              onInjectorUrlChanged={onInjectorUrlChanged}
+                                              injectorUrl={injectorUrl}/>
                         <br/>
                         <div className="mui-panel">
                             <Button raised accent ripple onClick={onRefresh}>Refresh</Button>

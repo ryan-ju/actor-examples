@@ -13,6 +13,9 @@ echo "GRID_SIZE=$GRID_SIZE" >> /tmp/init/init.log 2>&1
 
 echo "==== Create /tmp/init ===="
 mkdir -p /tmp/init >> /tmp/init/init.log 2>&1
+echo "==== Set net.ipv4.ip_local_port_range to 32768 65535 ====" >> /tmp/init/init.log 2>&1
+echo "net.ipv4.ip_local_port_range = 32768 65535" > /etc/sysctl.conf 
+sysctl -p /etc/sysctl.conf >> /tmp/init/init.log 2>&1
 echo "==== System tuning ====" >> /tmp/init/init.log 2>&1
 sysctl net.core.rmem_max=2097152 >> /tmp/init/init.log 2>&1
 sysctl net.core.wmem_max=2097152 >> /tmp/init/init.log 2>&1

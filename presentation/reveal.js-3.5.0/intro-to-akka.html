@@ -58,7 +58,7 @@
                         <textarea data-template>
                             #### Examples of Today's Problems
                             * Monitor courier status (auto offline)
-                            * Monitor job status (has it been delivered yet?)
+                            * Monitor job status (What jobs are currently live?  Which jobs haven't been allocated yet?)
                             * Smart recommendations based on geological information (courier, routing, etc)
                             * Dynamic job management (grouping multiple jobs together)
                             * Capacity management (identifying hotspots and send more couriers)
@@ -193,6 +193,37 @@
                     </aside>
                 </section>
 
+                <section data-background-iframe="slide-background.html" data-markdown>
+                    <textarea data-template>
+                        ### Akka Actor Example
+
+                        ```
+                        import akka.actor.Actor
+                        import akka.actor.ActorSystem
+                        import akka.actor.Props
+
+                        class HelloActor extends Actor {
+                            def receive = {
+                                case "hello" => println("hello back at you")
+                                case _       => println("huh?")
+                            }
+                        }
+
+                        object Main extends App {
+                            val system = ActorSystem("HelloSystem")
+                            // default Actor constructor
+                            val helloActor = system.actorOf(Props[HelloActor], name = "helloactor")
+                            helloActor ! "hello"
+                            helloActor ! "buenos dias"
+                        }
+                        ```
+                    </textarea>
+
+                    <aside class="notes">
+                        There's a Scala native project, which might allow Akka to be compiled to native code directly.
+                    </aside>
+                </section>
+
                 <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
@@ -268,6 +299,7 @@
                         <textarea data-template>
                             * The grid can use any shape of tiles
                             * Neighbourhood topology is easily computed
+                            * Query all cells concurrently and collect results
                         </textarea>
                     </div>
                 </section>
@@ -288,10 +320,10 @@
                 <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
-                            ### Going Distributed Ctnd.
+                            ### Going Distributed Cont'd
                         </textarea>
                     </div>
-                    <div class="fragment" data-markdown>
+                    <div data-markdown>
                         <textarea data-template>
                             ![](images/intro-to-akka/courier-realtime-akka-clustering-2.png) <!-- .element: class="plain" style="height: 400px" -->
                         </textarea>
@@ -301,12 +333,167 @@
                 <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
-                            ### Going Distributed Ctnd.
+                            ### Going Distributed Cont'd
+                        </textarea>
+                    </div>
+                    <div data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-3.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            # Going Distributed is Hard
+                        </textarea>
+                    </div>
+                </section>
+
+                <!-- Split Brain -->
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### The Split Brain
                         </textarea>
                     </div>
                     <div class="fragment" data-markdown>
                         <textarea data-template>
-                            ![](images/intro-to-akka/courier-realtime-akka-clustering-3.png) <!-- .element: class="plain" style="height: 400px" -->
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-split-brain-1.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### The Split Brain
+                        </textarea>
+                    </div>
+                    <div data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-split-brain-2.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### The Split Brain
+                        </textarea>
+                    </div>
+                    <div data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-split-brain-3.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### The Split Brain
+                        </textarea>
+                    </div>
+                    <div data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/courier-realtime-akka-clustering-split-brain-4.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### The Split Brain Solutions <!-- .element: style="text-align: left" -->
+
+                            * <!-- .element: class="fragment" --> Majority wins
+                            * <!-- .element: class="fragment" --> Oldest wins
+                            * <!-- .element: class="fragment" --> Referee wins
+                        </textarea>
+                    </div>
+                    <br/>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            ### Gossip Protocol <!-- .element: style="text-align: left" -->
+
+                            * Heartbeats between nodes
+                            * Topology info exchange
+                        </textarea>
+                    </div>
+                </section>
+
+                <!-- Timeout -->
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Timeout Issue
+
+                            How long do you wait before marking a node as unreachable?
+                        </textarea>
+                    </div>
+                    <div class="fragment">
+                        <div data-markdown>
+                            <textarea data-template>
+                                #### Example <!-- .element: style="text-align: left" -->
+
+                                ##### The Phi Detector <!-- .element: style="text-align: left" -->
+                            </textarea>
+                        </div>
+                        <div>
+                            $$\phi = -\log_{10}(1 - F_\sigma(time\_since\_last\_heartbeat))$$
+
+                            Where $F_\sigma$ is CDF of a normal distribution with standard deviation $\sigma$
+                        </div>
+                        <div data-markdown>
+                            <textarea data-template>
+                                ![](images/intro-to-akka/phi-detector.png) <!-- .element: class="plain" style="height: 400px; margin: 0" -->
+                            </textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recovery -->
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### How to Recover from Crashes?
+
+                            #### <!-- .element: class="fragment" --> Answer: Use Error Kernel and Persistence
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Error Kernel (a fancy way to say "management hierarchy")
+                        </textarea>
+                    </div>
+                    <div class="fragment" data-markdown>
+                        <textarea data-template>
+                            ![](images/intro-to-akka/akka-actor-hierarchy.png) <!-- .element: class="plain" style="height: 400px" -->
+                        </textarea>
+                    </div>
+                </section>
+
+                <section data-background-iframe="slide-background.html">
+                    <div data-markdown>
+                        <textarea data-template>
+                            ### Persistence and Event Sourcing <!-- .element: style="text-align: left" -->
+
+                            * Event sourcing: modeling events as the "atoms" of state changes
+                            * Persist events in time order to DB
+                            * Play events back to reconstruct state
+                            * Persist snapshots to make recovery faster
+
+                            <br/>
+                            #### Akka comes with persistence out of the box
                         </textarea>
                     </div>
                 </section>
@@ -345,7 +532,7 @@
 
                             * <!-- .element: class="fragment" data-fragment-index="6" --> 2 x c4.large (2 vCPU, 3.75 GB RAM)
                             * <!-- .element: class="fragment" data-fragment-index="6" --> 3 nodes for 20000 courier test
-                            * <!-- .element: class="fragment" data-fragment-index="6" --> 3GB heap, CMS GC
+                            * <!-- .element: class="fragment" data-fragment-index="6" --> 1GB heap, CMS GC
                         </textarea>
                     </div>
                     <div class="fragment" data-fragment-index="2" style="width: 50%; float: right" data-markdown>
@@ -380,49 +567,12 @@
                     </div>
                 </section>
 
-                <section data-background-iframe="slide-background.html" style="width: 1400px">
+                <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
                             ### Load Test Result: 20000 Couriers
 
                             TBC
-                        </textarea>
-                    </div>
-                    <!--<div style="width: 50%; float: left" data-markdown>-->
-                        <!--<textarea data-template>-->
-                            <!--![](images/intro-to-akka/load/2000courier-courier-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 250px; margin: 0" &ndash;&gt;-->
-                            <!--![](images/intro-to-akka/load/2000courier-system-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 250px; margin: 0" &ndash;&gt;-->
-                        <!--</textarea>-->
-                    <!--</div>-->
-                    <!--<div style="width: 50%; float: right" data-markdown>-->
-                        <!--<textarea data-template>-->
-                            <!--![](images/intro-to-akka/load/2000courier-grid-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 250px; margin: 0" &ndash;&gt;-->
-                            <!--![](images/intro-to-akka/load/2000courier-network-metrics.png) &lt;!&ndash; .element: class="plain" style="height: 125px; margin: 0" &ndash;&gt;-->
-                        <!--</textarea>-->
-                    <!--</div>-->
-                    <!--<div style="display:inline-block;" data-markdown>-->
-                        <!--<textarea data-template>-->
-                            <!--Service GC logs: http://gceasy.io/diamondgc-report.jsp?oTxnId_value=ee8d758f-eb0c-4c65-88a4-206f71613575# &lt;!&ndash; .element: style="font-size: medium" &ndash;&gt;-->
-                        <!--</textarea>-->
-                    <!--</div>-->
-                </section>
-
-                <section data-background-iframe="slide-background.html" style="width: 1400px">
-                    <div data-markdown>
-                        <textarea data-template>
-                            ### Load Test Result: 20000 Couriers
-                        </textarea>
-                    </div>
-                    <div style="width: 50%; float: left" data-markdown>
-                        <textarea data-template>
-                            ![](images/intro-to-akka/load/2000courier-courier-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
-                            ![](images/intro-to-akka/load/2000courier-system-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
-                        </textarea>
-                    </div>
-                    <div style="width: 50%; float: right" data-markdown>
-                        <textarea data-template>
-                            ![](images/intro-to-akka/load/2000courier-grid-metrics.png) <!-- .element: class="plain" style="height: 250px; margin: 0" -->
-                            ![](images/intro-to-akka/load/2000courier-network-metrics.png) <!-- .element: class="plain" style="height: 125px; margin: 0" -->
                         </textarea>
                     </div>
                 </section>
@@ -442,7 +592,7 @@
                     </div>
                 </section>
 
-                <section data-background-iframe="slide-background.html">
+                <section data-background-iframe="slide-background.html" style="padding: 0 0 10% 0">
                     <div data-markdown>
                         <textarea data-template>
                             ### Challenges
@@ -490,13 +640,15 @@
                 <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
-                            ### Alternative Actor Techs
+                            ### Alternative Actor Systems <!-- .element: style="text-align: left" -->
 
                             * [Orleans](http://dotnet.github.io/orleans/)(.Net only, sorry)
                             * [Proto Actor](http://proto.actor/)(Go lang, still in beta)
                             * [CAF](https://actor-framework.org/)(C++)
 
-                            ### Alternative Distributed Computing Techs
+                            <br/>
+
+                            ### Alternative Distributed Computing Techs <!-- .element: style="text-align: left" -->
 
                             * [Ignite](https://ignite.apache.org/)(Java, in memory data grid)
                             * [Spark Streaming](https://spark.apache.org/streaming/)(Scala)
@@ -519,13 +671,16 @@
                 <section data-background-iframe="slide-background.html">
                     <div data-markdown>
                         <textarea data-template>
-                            # References
+                            # References <!-- .element: style="text-align: left" -->
 
                             * http://doc.akka.io/docs/akka/current/scala
                             * http://kamon.io/documentation/get-started/
                             * https://github.com/cloudtools/troposphere
                             * https://github.com/typesafehub/config
                             * https://bitnami.com/stack/cassandra
+                            * OpenGIS Spec: http://www.opengeospatial.org/standards/sfa
+                            * MapD: https://www.mapd.com/
+
                         </textarea>
                     </div>
                 </section>
@@ -544,13 +699,14 @@
 					{ src: 'plugin/markdown/marked.js' },
 					{ src: 'plugin/markdown/markdown.js' },
 					{ src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/math/math.js', async: true },
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
                     { src: 'plugin/reveal-svg/reveal-svg-fragment.js', condition: function() { return !!document.querySelector( '[data-svg-fragment]' ); } }
 				],
 				transition: "none",
                 backgroundTransition: "none",
                 width: "90%",
-                fragments: false
+                fragments: true
 			});
 		</script>
 	</body>

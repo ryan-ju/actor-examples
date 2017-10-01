@@ -30,6 +30,13 @@ repositories {
     maven {
         url "https://dl.bintray.com/kamon-io/snapshots"
     }
+    maven {
+        credentials {
+            username "$lightbendUser"
+            password "$lightbendPassword"
+        }
+        url "https://repo.lightbend.com/commercial-releases"
+    }
 }
 
 configurations {
@@ -49,10 +56,13 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.6'
     compile 'com.typesafe.akka:akka-persistence-cassandra_2.12:0.54'
     compile 'com.amazonaws:aws-java-sdk-kinesis:1.11.145'
+    compile 'com.lightbend.cinnamon:cinnamon-akka_2.12:2.5.0-M1'
+    compile 'com.lightbend.cinnamon:cinnamon-datadog_2.12:2.5.0-M1'
     compile 'io.kamon:kamon-akka-2.5_2.12:1.0.0-RC1-513e168ea538f94f5de22b191580ca4faaaa52e6'
     // Needed for our ported kamon datadog
     compile 'org.asynchttpclient:async-http-client:2.0.25'
     runtime 'org.aspectj:aspectjweaver:1.8.10'
+    runtime 'com.lightbend.cinnamon:cinnamon-agent:2.5.0-M1'
 
     testCompile 'junit:junit:4.12'
 }

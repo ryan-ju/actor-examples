@@ -231,7 +231,7 @@ fi
 # if [ "x$LOCAL_JMX" = "x" ]; then
 #    LOCAL_JMX=yes
 # fi
-LOCAL_JMX=no
+LOCAL_JMX=yes
 
 # Specifies the default port over which Cassandra will be available for
 # JMX connections.

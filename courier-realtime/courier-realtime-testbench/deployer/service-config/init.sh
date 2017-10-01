@@ -13,6 +13,9 @@ echo "WS=$WS" >> /tmp/init/init.log 2>&1
 
 echo "==== Create /tmp/init ===="
 mkdir -p /tmp/init >> /tmp/init/init.log 2>&1
+echo "==== Set net.ipv4.ip_local_port_range to 32768 65535 ====" >> /tmp/init/init.log 2>&1
+echo "net.ipv4.ip_local_port_range = 32768 65535" > /etc/sysctl.conf 
+sysctl -p /etc/sysctl.conf >> /tmp/init/init.log 2>&1
 echo "==== System tuning ====" >> /tmp/init/init.log 2>&1
 sysctl net.core.rmem_max=2097152 >> /tmp/init/init.log 2>&1
 sysctl net.core.wmem_max=2097152 >> /tmp/init/init.log 2>&1
@@ -22,6 +25,12 @@ echo "==== Install sysstat ====" >> /tmp/init/init.log 2>&1
 yum install -y sysstat >> /tmp/init/init.log 2>&1
 echo "==== Install nethogs ====" >> /tmp/init/init.log 2>&1
 yum install -y nethogs >> /tmp/init/init.log 2>&1
+echo "==== Install iftop ====" >> /tmp/init/init.log 2>&1
+yum install -y iftop >> /tmp/init/init.log 2>&1
+echo "==== Install iptraf ====" >> /tmp/init/init.log 2>&1
+yum install -y iptraf >> /tmp/init/init.log 2>&1
+echo "==== Install dstat ====" >> /tmp/init/init.log 2>&1
+yum install -y dstat >> /tmp/init/init.log 2>&1
 echo "==== Install Datadog agent ====" >> /tmp/init/init.log 2>&1
 DD_API_KEY="$DATADOG_API_KEY" bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)" >> /tmp/init/init.log 2>&1
 echo "==== Configure Datadog agent ====" >> /tmp/init/init.log 2>&1

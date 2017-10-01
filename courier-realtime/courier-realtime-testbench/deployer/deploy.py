@@ -200,7 +200,7 @@ def create_acl(vpc, cassandra_subnet, service_subnet, injector_subnet, load_test
         RuleNumber='201',
         CidrBlock='0.0.0.0/0',
         Protocol='6',
-        PortRange=PortRange(From='32768', To='65535'),
+        PortRange=PortRange(From='10240', To='65535'),
         Egress=False,
         RuleAction='allow'
     ))
@@ -296,7 +296,7 @@ def create_acl(vpc, cassandra_subnet, service_subnet, injector_subnet, load_test
         RuleNumber='201',
         CidrBlock='0.0.0.0/0',
         Protocol='6',
-        PortRange=PortRange(From='32768', To='65535'),
+        PortRange=PortRange(From='10240', To='65535'),
         Egress=False,
         RuleAction='allow'
     ))
@@ -401,7 +401,7 @@ def create_acl(vpc, cassandra_subnet, service_subnet, injector_subnet, load_test
         RuleNumber='200',
         CidrBlock='0.0.0.0/0',
         Protocol='6',
-        PortRange=PortRange(From='32768', To='65535'),
+        PortRange=PortRange(From='10240', To='65535'),
         Egress=False,
         RuleAction='allow'
     ))
@@ -506,7 +506,7 @@ def create_acl(vpc, cassandra_subnet, service_subnet, injector_subnet, load_test
         RuleNumber='200',
         CidrBlock='0.0.0.0/0',
         Protocol='6',
-        PortRange=PortRange(From='32768', To='65535'),
+        PortRange=PortRange(From='10240', To='65535'),
         Egress=False,
         RuleAction='allow'
     ))
@@ -593,12 +593,13 @@ def create_vpc_stack_outputs(vpc, cassandra_subnet, service_subnet, injector_sub
     ]
 
 
-def create_cassandra_user_data(seed_id, aws_access_key_param, aws_secret_key_param, seed_nodes_param, bucket):
+def create_cassandra_user_data(seed_id, aws_access_key_param, aws_secret_key_param, datadog_api_key_param, seed_nodes_param, bucket):
     if seed_id:
         data = [
             '#!/bin/bash\n',
             'export AWS_ACCESS_KEY_ID=', Ref(aws_access_key_param), '\n',
             'export AWS_SECRET_ACCESS_KEY=', Ref(aws_secret_key_param), '\n',
+            'export DATADOG_API_KEY=', Ref(datadog_api_key_param), '\n',
             'export SEED_NODES=', Ref(seed_nodes_param), '\n',
             # Install cfn-init
             'apt-get update\n',
@@ -626,6 +627,7 @@ def create_cassandra_user_data(seed_id, aws_access_key_param, aws_secret_key_par
             '#!/bin/bash\n',
             'export AWS_ACCESS_KEY_ID=', Ref(aws_access_key_param), '\n',
             'export AWS_SECRET_ACCESS_KEY=', Ref(aws_secret_key_param), '\n',
+            'export DATADOG_API_KEY=', Ref(datadog_api_key_param), '\n',
             'export SEED_NODES=', Ref(seed_nodes_param), '\n',
             # Install init scripts
             'mkdir -p /tmp/init\n',
@@ -720,7 +722,7 @@ def create_injector_userdata(
     return Base64(Join('', data))
 
 
-def create_cassandra_cluster(vpc, seed_nr, instance_type, key_pair, cassandra_subnet, home_ip, office_ip, bucket):
+def create_cassandra_cluster(vpc, seed_nr, instance_type, key_pair, cassandra_subnet, home_ip, office_ip, bucket, sg_min):
     parameters = []
     resources = []
     outputs = []
@@ -736,6 +738,12 @@ def create_cassandra_cluster(vpc, seed_nr, instance_type, key_pair, cassandra_su
         NoEcho=True
     )
     parameters.append(aws_secret_key_param)
+    datadog_api_key_param = Parameter(
+        'DatadogApiKey',
+        Type='String',
+        NoEcho=True
+    )
+    parameters.append(datadog_api_key_param)
     seed_nodes = ','.join([instance_ip(CASSANDRA_NETWORK, str(i)) for i in range(10, 10 + seed_nr)])
     seed_nodes_param = Parameter(
         'CassandraSeedNodes',
@@ -808,7 +816,14 @@ def create_cassandra_cluster(vpc, seed_nr, instance_type, key_pair, cassandra_su
                     PrivateIpAddress=ip
                 )
             ],
-            UserData=create_cassandra_user_data(f'CassandraSeed{i}', aws_access_key_param, aws_secret_key_param, seed_nodes_param, bucket),
+            UserData=create_cassandra_user_data(
+                f'CassandraSeed{i}',
+                aws_access_key_param=aws_access_key_param,
+                aws_secret_key_param=aws_secret_key_param,
+                datadog_api_key_param=datadog_api_key_param,
+                seed_nodes_param=seed_nodes_param,
+                bucket=bucket
+            ),
             Tags=Tags(
                 Name=f'CassandraSeed{i}'
             )
@@ -827,6 +842,7 @@ def create_cassandra_cluster(vpc, seed_nr, instance_type, key_pair, cassandra_su
             seed_id=None,
             aws_access_key_param=aws_access_key_param,
             aws_secret_key_param=aws_secret_key_param,
+            datadog_api_key_param=datadog_api_key_param,
             seed_nodes_param=seed_nodes_param,
             bucket=bucket
         )
@@ -836,7 +852,7 @@ def create_cassandra_cluster(vpc, seed_nr, instance_type, key_pair, cassandra_su
     autoscaling = AutoScalingGroup(
         'CassandraAutoScalingGroup',
         LaunchConfigurationName=Ref(launch_config),
-        MinSize=1,
+        MinSize=sg_min,
         MaxSize=3,
         VPCZoneIdentifier=[cassandra_subnet]
     )
@@ -1289,11 +1305,13 @@ def vpc(ctx, operation, dryrun, home_ip, office_ip):
 @click.option('--bucket', default='courier-realtime', help='S3 bucket to download init tar')
 @click.option('--aws-access-key', 'aws_access_key', envvar='AWS_ACCESS_KEY_ID', help='Defaults to AWS_ACCESS_KEY_ID')
 @click.option('--aws-secret-key', 'aws_secret_key', envvar='AWS_SECRET_ACCESS_KEY', help='Defaults to AWS_SECRET_ACCESS_KEY')
+@click.option('--datadog-api-key', 'datadog_api_key', envvar='DATADOG_API_KEY', help='Datadog API key')
 @click.option('--home-ip', 'home_ip', help='Trusted home IP address')
 @click.option('--office-ip', 'office_ip', help='Trusted office IP address')
+@click.option('--sg-min', 'sg_min', default=1, help='Number of auto scaling instances.  Must be <= 3')
 @click.option('--dry-run', '-d', 'dryrun', is_flag=True)
 @click.pass_context
-def cassandra(ctx, operation, number, instance, key_pair, bucket, aws_access_key, aws_secret_key, home_ip, office_ip, dryrun):
+def cassandra(ctx, operation, number, instance, key_pair, bucket, aws_access_key, aws_secret_key, datadog_api_key, home_ip, office_ip, sg_min, dryrun):
     if operation == 'deploy':
         if not home_ip:
             raise click.BadParameter('Must specify home IP')
@@ -1301,7 +1319,7 @@ def cassandra(ctx, operation, number, instance, key_pair, bucket, aws_access_key
             raise click.BadParameter('Must specify office IP')
         vpc = ImportValue(f'{VPC_STACK}-VPC')
         cassandra_subnet = ImportValue(f'{VPC_STACK}-CSD-SUBNET')
-        parameters, resources, outputs = create_cassandra_cluster(vpc, number, instance, key_pair, cassandra_subnet, home_ip, office_ip, bucket)
+        parameters, resources, outputs = create_cassandra_cluster(vpc, number, instance, key_pair, cassandra_subnet, home_ip, office_ip, bucket, sg_min)
 
         t = Template()
         t.add_description("""Cassandra cluster stack""")
@@ -1324,6 +1342,10 @@ def cassandra(ctx, operation, number, instance, key_pair, bucket, aws_access_key
                     {
                         'ParameterKey': 'AWSSecretKey',
                         'ParameterValue': aws_secret_key
+                    },
+                    {
+                        'ParameterKey': 'DatadogApiKey',
+                        'ParameterValue': datadog_api_key
                     }
                 ]
             )
@@ -1416,7 +1438,7 @@ def kinesis(ctx, operation, name, shards, dryrun):
 @click.option('--key-pair', 'key_pair', default=KEY_PAIR, help='EC2 SSH key pair')
 @click.option('--aws-access-key', 'aws_access_key', envvar='AWS_ACCESS_KEY_ID', help='Defaults to AWS_ACCESS_KEY_ID')
 @click.option('--aws-secret-key', 'aws_secret_key', envvar='AWS_SECRET_ACCESS_KEY', help='Defaults to AWS_SECRET_ACCESS_KEY')
-@click.option('--datadog-api-key', 'datadog_api_key', help='Datadog API key')
+@click.option('--datadog-api-key', 'datadog_api_key', envvar='DATADOG_API_KEY', help='Datadog API key')
 @click.option('--cassandra-rf', 'cassandra_replication_factor', default=3, help='Cassandra replication factor.  Default 3')
 @click.option('--bucket', default='courier-realtime', help='S3 bucket to download init tar')
 @click.option('--grid-size', 'grid_size', default=1000)
